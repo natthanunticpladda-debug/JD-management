@@ -135,7 +135,7 @@ export const MainLayout = () => {
       {/* Main content */}
       <div className="lg:pl-72">
         {/* Mobile header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white/80 backdrop-blur-xl border-b border-primary-100/50 lg:hidden shadow-apple">
+        <div className="sticky top-0 z-10 flex items-center justify-between h-16 px-6 bg-white/80 backdrop-blur-xl border-b border-primary-100/50 lg:hidden shadow-apple print:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 rounded-full p-2 transition-all duration-200"
