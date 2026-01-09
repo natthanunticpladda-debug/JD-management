@@ -7,6 +7,7 @@ import { useTeams } from '../../hooks/useTeams';
 import { useCompetencies } from '../../hooks/useCompetencies';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui/Button';
+import { CompetencyRadarChart } from '../../components/CompetencyRadarChart';
 import {
   ArrowLeft,
   Edit2,
@@ -20,6 +21,7 @@ import {
   User,
   Download,
   Share2,
+  Printer,
 } from 'lucide-react';
 import type { JobDescriptionAPI } from '../../types';
 
@@ -81,6 +83,10 @@ export const ViewJDPage = () => {
     } catch (error) {
       // Error is handled in the hook
     }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   const getStatusBadge = (status: string) => {
@@ -167,6 +173,13 @@ export const ViewJDPage = () => {
         <div className="flex items-center space-x-2">
           <Button
             variant="ghost"
+            onClick={handlePrint}
+            icon={<Printer className="w-4 h-4" />}
+          >
+            Print
+          </Button>
+          <Button
+            variant="ghost"
             icon={<Download className="w-4 h-4" />}
           >
             Export PDF
@@ -177,15 +190,6 @@ export const ViewJDPage = () => {
           >
             Share
           </Button>
-          {canEdit && (
-            <Link to={`/jd/${jd.id}/edit`}>
-              <Button
-                icon={<Edit2 className="w-4 h-4" />}
-              >
-                Edit
-              </Button>
-            </Link>
-          )}
           {canEdit && jd.status !== 'archived' && (
             <Button
               variant="ghost"
@@ -230,11 +234,19 @@ export const ViewJDPage = () => {
                 </span>
               </div>
             </div>
-            <div className="text-right">
+            <div className="text-right flex flex-col items-end gap-2">
               {getStatusBadge(jd.status)}
-              <div className="text-accent-100 text-sm mt-2">
+              <div className="text-accent-100 text-sm">
                 Updated {formatDate(jd.updated_at)}
               </div>
+              {canEdit && (
+                <Link to={`/jd/${jd.id}/edit`}>
+                  <button className="flex items-center gap-1 px-3 py-1.5 text-sm text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                    <Edit2 className="w-3.5 h-3.5" />
+                    Edit
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -305,7 +317,16 @@ export const ViewJDPage = () => {
           {/* Competencies */}
           {jd.competencies && jd.competencies.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-primary-600 mb-4">Core Competencies</h3>
+              <h3 className="text-lg font-semibold text-primary-600 mb-4">
+                Core Competencies (สมรรถนะหลัก)
+              </h3>
+              
+              {/* Spider Chart */}
+              <div className="bg-white rounded-lg p-6 mb-6 border border-primary-100">
+                <CompetencyRadarChart competencies={jd.competencies} />
+              </div>
+
+              {/* Competency Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {jd.competencies.map((comp, index) => (
                   <div key={index} className="bg-primary-50/50 rounded-lg p-4">
@@ -331,27 +352,38 @@ export const ViewJDPage = () => {
             <div>
               <h3 className="text-lg font-semibold text-primary-600 mb-4">Risk Factors</h3>
               <div className="space-y-4">
-                {Object.entries(
-                  jd.risks.reduce((acc, risk) => {
-                    if (!acc[risk.type]) acc[risk.type] = [];
-                    acc[risk.type].push(risk);
-                    return acc;
-                  }, {} as Record<string, typeof jd.risks>)
-                ).map(([type, items]) => (
-                  <div key={type} className="bg-primary-50/50 rounded-lg p-4">
-                    <h4 className="font-medium text-primary-600 mb-2 capitalize">
-                      {type} Risks
-                    </h4>
-                    <ul className="space-y-1">
-                      {items.map((item, index) => (
+                {/* External Risks */}
+                {jd.risks.filter(r => r.type === 'external').length > 0 && (
+                  <div className="rounded-lg overflow-hidden border border-red-200">
+                    <div className="bg-red-50 px-4 py-2 border-l-4 border-red-500">
+                      <h4 className="font-semibold text-red-600">External Risks</h4>
+                    </div>
+                    <ul className="p-4 space-y-2 bg-white">
+                      {jd.risks.filter(r => r.type === 'external').map((item, index) => (
                         <li key={index} className="flex items-start">
-                          <span className="text-primary-400 mr-2">•</span>
-                          <span className="text-primary-700">{item.description}</span>
+                          <span className="text-red-400 mr-2 mt-1">●</span>
+                          <span className="text-gray-700">{item.description}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                ))}
+                )}
+                {/* Internal Risks */}
+                {jd.risks.filter(r => r.type === 'internal').length > 0 && (
+                  <div className="rounded-lg overflow-hidden border border-blue-200">
+                    <div className="bg-blue-50 px-4 py-2 border-l-4 border-blue-500">
+                      <h4 className="font-semibold text-blue-600">Internal Risks</h4>
+                    </div>
+                    <ul className="p-4 space-y-2 bg-white">
+                      {jd.risks.filter(r => r.type === 'internal').map((item, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="text-blue-400 mr-2 mt-1">●</span>
+                          <span className="text-gray-700">{item.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           )}

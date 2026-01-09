@@ -652,26 +652,30 @@ export const EditJDPage = () => {
               <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Risk Factors (ความเสี่ยง)</h3>
               <div className="space-y-4">
                 {externalRisks.filter(r => r.description.trim()).length > 0 && (
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <h4 className="font-medium text-gray-700 mb-2 text-sm">External Risks (ความเสี่ยงภายนอก)</h4>
-                    <ul className="space-y-1">
+                  <div className="rounded-lg overflow-hidden border border-red-200">
+                    <div className="bg-red-50 px-4 py-2 border-l-4 border-red-500">
+                      <h4 className="font-semibold text-red-600 text-sm">External Risks (ความเสี่ยงภายนอก)</h4>
+                    </div>
+                    <ul className="p-3 space-y-2 bg-white">
                       {externalRisks.filter(r => r.description.trim()).map((risk, idx) => (
                         <li key={idx} className="flex items-start text-sm">
-                          <span className="text-gray-400 mr-2">•</span>
-                          <span className="text-gray-600">{risk.description}</span>
+                          <span className="text-red-400 mr-2 mt-0.5">●</span>
+                          <span className="text-gray-700">{risk.description}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 )}
                 {internalRisks.filter(r => r.description.trim()).length > 0 && (
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <h4 className="font-medium text-gray-700 mb-2 text-sm">Internal Risks (ความเสี่ยงภายใน)</h4>
-                    <ul className="space-y-1">
+                  <div className="rounded-lg overflow-hidden border border-blue-200">
+                    <div className="bg-blue-50 px-4 py-2 border-l-4 border-blue-500">
+                      <h4 className="font-semibold text-blue-600 text-sm">Internal Risks (ความเสี่ยงภายใน)</h4>
+                    </div>
+                    <ul className="p-3 space-y-2 bg-white">
                       {internalRisks.filter(r => r.description.trim()).map((risk, idx) => (
                         <li key={idx} className="flex items-start text-sm">
-                          <span className="text-gray-400 mr-2">•</span>
-                          <span className="text-gray-600">{risk.description}</span>
+                          <span className="text-blue-400 mr-2 mt-0.5">●</span>
+                          <span className="text-gray-700">{risk.description}</span>
                         </li>
                       ))}
                     </ul>
