@@ -19,11 +19,8 @@ import {
   Calendar,
   MapPin,
   Building2,
-  User,
-  MoreVertical,
 } from 'lucide-react';
 import type { JobDescriptionFilters, JDStatus } from '../../types';
-import toast from 'react-hot-toast';
 
 export const BrowseJDPage = () => {
   const { user } = useAuth();

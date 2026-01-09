@@ -12,7 +12,6 @@ import {
   Activity,
   Clock,
 } from 'lucide-react';
-import type { ActivityLog } from '../../types';
 
 export const ActivityLogsPage = () => {
   const { user: currentUser } = useAuth();
@@ -141,12 +140,15 @@ export const ActivityLogsPage = () => {
       {/* Search and Filters */}
       <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Input
-            placeholder="Search by user, description, or entity ID..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            icon={<Search className="w-5 h-5" />}
-          />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 w-5 h-5" />
+            <Input
+              placeholder="Search by user, description, or entity ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
 
           <Select value={actionFilter} onChange={(e) => setActionFilter(e.target.value)}>
             <option value="all">All Actions</option>

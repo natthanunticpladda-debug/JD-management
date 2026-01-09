@@ -16,7 +16,7 @@ import type {
 // Job Descriptions API
 export const jobDescriptionsAPI = {
   // Get all job descriptions with optional filters
-  getAll: async (filters?: JobDescriptionFilters): Promise<JobDescriptionAPI[]> => {
+  getAll: async (_filters?: JobDescriptionFilters): Promise<JobDescriptionAPI[]> => {
     try {
       // Query with relations
       const { data, error } = await supabase

@@ -217,23 +217,23 @@ export const ViewJDPage = () => {
             <div>
               <h1 className="text-3xl font-bold mb-2">{jd.position}</h1>
               <div className="flex items-center space-x-4 text-accent-100">
-                <span>{jd.jobBand} • {jd.jobGrade}</span>
+                <span>{jd.job_band} • {jd.job_grade}</span>
                 <span>•</span>
                 <span className="flex items-center">
                   <Building2 className="w-4 h-4 mr-1" />
-                  {getDepartmentName(jd.departmentId)}
+                  {getDepartmentName(jd.department_id)}
                 </span>
                 <span>•</span>
                 <span className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
-                  {getLocationName(jd.locationId)}
+                  {getLocationName(jd.location_id)}
                 </span>
               </div>
             </div>
             <div className="text-right">
               {getStatusBadge(jd.status)}
               <div className="text-accent-100 text-sm mt-2">
-                Updated {formatDate(jd.updatedAt)}
+                Updated {formatDate(jd.updated_at)}
               </div>
             </div>
           </div>
@@ -248,19 +248,19 @@ export const ViewJDPage = () => {
                 <div className="flex items-center">
                   <Users className="w-4 h-4 text-primary-400 mr-2" />
                   <span className="text-sm text-primary-500">Team:</span>
-                  <span className="ml-2 text-sm font-medium">{getTeamName(jd.teamId)}</span>
+                  <span className="ml-2 text-sm font-medium">{getTeamName(jd.team_id)}</span>
                 </div>
-                {jd.directSupervisor && (
+                {jd.direct_supervisor && (
                   <div className="flex items-center">
                     <User className="w-4 h-4 text-primary-400 mr-2" />
                     <span className="text-sm text-primary-500">Direct Supervisor:</span>
-                    <span className="ml-2 text-sm font-medium">{jd.directSupervisor}</span>
+                    <span className="ml-2 text-sm font-medium">{jd.direct_supervisor}</span>
                   </div>
                 )}
                 <div className="flex items-center">
                   <Calendar className="w-4 h-4 text-primary-400 mr-2" />
                   <span className="text-sm text-primary-500">Created:</span>
-                  <span className="ml-2 text-sm font-medium">{formatDate(jd.createdAt)}</span>
+                  <span className="ml-2 text-sm font-medium">{formatDate(jd.created_at)}</span>
                 </div>
               </div>
             </div>
@@ -269,7 +269,7 @@ export const ViewJDPage = () => {
           {/* Job Purpose */}
           <div>
             <h3 className="text-lg font-semibold text-primary-600 mb-3">Job Purpose</h3>
-            <p className="text-primary-700 leading-relaxed">{jd.jobPurpose}</p>
+            <p className="text-primary-700 leading-relaxed">{jd.job_purpose}</p>
           </div>
 
           {/* Responsibilities */}
@@ -311,7 +311,7 @@ export const ViewJDPage = () => {
                   <div key={index} className="bg-primary-50/50 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-medium text-primary-600">
-                        {getCompetencyName(comp.competencyId)}
+                        {getCompetencyName(comp.competency_id)}
                       </h4>
                       <span className={`font-bold ${getScoreColor(comp.score)}`}>
                         {comp.score}/5

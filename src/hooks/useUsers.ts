@@ -137,11 +137,11 @@ export const useUsers = () => {
     }
   };
 
-  const resetPassword = async (userId: string, newPassword: string) => {
+  const resetPassword = async (_userId: string, _newPassword: string) => {
     try {
       // This would typically be done via admin API
       // For now, we'll show a message
-      toast.info('Password reset functionality requires admin API access');
+      toast('Password reset functionality requires admin API access');
       // In production, you would use Supabase Admin API:
       // const { data, error } = await supabase.auth.admin.updateUserById(
       //   userId,

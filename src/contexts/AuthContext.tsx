@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, type ReactNode } from 'react';
 
 interface User {
   id: string;
@@ -12,6 +12,9 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signUp: (email: string, password: string, fullName: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,6 +38,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     signOut: async () => {
       // Mock sign out
       console.log('Mock sign out');
+    },
+    signUp: async () => {
+      // Mock sign up
+      console.log('Mock sign up');
+    },
+    resetPassword: async () => {
+      // Mock reset password
+      console.log('Mock reset password');
+    },
+    updatePassword: async () => {
+      // Mock update password
+      console.log('Mock update password');
     },
   };
 

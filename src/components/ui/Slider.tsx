@@ -21,14 +21,6 @@ export const Slider: React.FC<SliderProps> = ({
   showValue = true,
   colorCoded = false,
 }) => {
-  const getColor = (val: number) => {
-    if (!colorCoded) return 'bg-accent-500';
-
-    if (val <= 2) return 'bg-red-500';
-    if (val === 3) return 'bg-yellow-500';
-    return 'bg-green-500';
-  };
-
   const getTextColor = (val: number) => {
     if (!colorCoded) return 'text-accent-600';
 

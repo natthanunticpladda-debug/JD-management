@@ -1,8 +1,26 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { JobDescription } from '../types';
 
-export const exportJDToPDF = (jd: JobDescription) => {
+interface PDFJobDescription {
+  position: string;
+  job_band: string;
+  job_grade: string;
+  status: string;
+  direct_supervisor: string;
+  job_purpose?: string;
+  version: number;
+  created_at: string;
+  updated_at?: string;
+  location?: { name: string };
+  department?: { name: string };
+  team?: { name: string };
+  responsibilities?: Array<{ category: string; description: string }>;
+  risks?: Array<{ type: string; level?: string; description: string; mitigation?: string }>;
+  jd_competencies?: Array<{ score: number; competency?: { name: string } }>;
+  created_by_user?: { full_name: string };
+}
+
+export const exportJDToPDF = (jd: PDFJobDescription) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 20;

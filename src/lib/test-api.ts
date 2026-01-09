@@ -17,7 +17,7 @@ export const testAPI = {
       
       console.log('Connection test successful:', data);
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Connection test error:', error);
       return { success: false, error: error.message };
     }
@@ -41,7 +41,7 @@ export const testAPI = {
         locations: { count: locations.data?.length || 0, error: locations.error },
         competencies: { count: competencies.data?.length || 0, error: competencies.error },
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Data test error:', error);
       return { error: error.message };
     }
@@ -92,7 +92,7 @@ export const testAPI = {
       await supabase.from('job_descriptions').delete().eq('id', data.id);
       
       return { success: true, data };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Test JD creation error:', error);
       return { success: false, error: error.message };
     }
