@@ -484,6 +484,53 @@ export const EditJDPage = () => {
     }
   };
 
+  // Helper functions for print display
+  const getLocationName = (locId: string) => {
+    return locations.find(loc => loc.id === locId)?.name || '';
+  };
+
+  const getDepartmentName = (deptId: string) => {
+    return departments.find(dept => dept.id === deptId)?.name || '';
+  };
+
+  const getTeamName = (tId: string) => {
+    return teams.find(team => team.id === tId)?.name || '';
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  // Get all responsibilities for print display
+  const getAllResponsibilities = () => {
+    const allResp: { category: string; categoryLabel: string; items: ResponsibilityItem[] }[] = [];
+
+    if (strategicResponsibilities.filter(r => r.description.trim()).length > 0) {
+      allResp.push({ category: 'strategic', categoryLabel: 'Strategic (เชิงกลยุทธ์)', items: strategicResponsibilities.filter(r => r.description.trim()) });
+    }
+    if (teamManagementResponsibilities.filter(r => r.description.trim()).length > 0) {
+      allResp.push({ category: 'team_management', categoryLabel: 'Team Management & Development', items: teamManagementResponsibilities.filter(r => r.description.trim()) });
+    }
+    if (generalResponsibilities.filter(r => r.description.trim()).length > 0) {
+      allResp.push({ category: 'general', categoryLabel: 'General Tasks (งานทั่วไป)', items: generalResponsibilities.filter(r => r.description.trim()) });
+    }
+    if (cultureResponsibilities.filter(r => r.description.trim()).length > 0) {
+      allResp.push({ category: 'culture', categoryLabel: 'Culture Building', items: cultureResponsibilities.filter(r => r.description.trim()) });
+    }
+    if (efficiencyResponsibilities.filter(r => r.description.trim()).length > 0) {
+      allResp.push({ category: 'efficiency', categoryLabel: 'Improve Efficiency & Add Value', items: efficiencyResponsibilities.filter(r => r.description.trim()) });
+    }
+    if (otherResponsibilities.filter(r => r.description.trim()).length > 0) {
+      allResp.push({ category: 'other', categoryLabel: 'Other Assigned Works', items: otherResponsibilities.filter(r => r.description.trim()) });
+    }
+
+    return allResp;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -494,38 +541,185 @@ export const EditJDPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between print:mb-4">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="secondary"
-            onClick={handleCancel}
-            icon={<ArrowLeft className="w-4 h-4" />}
-            className="print:hidden"
-          >
-            Back
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-primary-600 print:text-2xl">{position || 'Edit Job Description'}</h1>
-            <p className="text-primary-400 mt-1 print:hidden">Update the job description details</p>
-            <p className="hidden print:block text-sm text-gray-500">{jobBand} • {jobGrade}</p>
+      {/* Print Version - Professional JD Layout */}
+      <div className="hidden print:block">
+        {/* Print Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 text-white rounded-t-lg -mx-4 mb-0" style={{ printColorAdjust: 'exact', WebkitPrintColorAdjust: 'exact' }}>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-bold mb-2">{position || 'Job Description'}</h1>
+              <div className="flex items-center gap-3 text-blue-100 text-sm">
+                <span>{jobBand} • {jobGrade}</span>
+                <span>•</span>
+                <span>{getDepartmentName(departmentId)}</span>
+                <span>•</span>
+                <span>{getLocationName(locationId)}</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                status === 'draft' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'
+              }`}>
+                {status === 'draft' ? 'Draft' : 'Published'}
+              </span>
+              {loadedJD && (
+                <div className="text-blue-100 text-xs mt-2">
+                  Updated: {formatDate(loadedJD.updated_at || loadedJD.created_at)}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3 print:hidden">
-          <Button
-            variant="secondary"
-            onClick={handlePrint}
-            icon={<Printer className="w-4 h-4" />}
-          >
-            Print
-          </Button>
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-            status === 'draft' ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-600'
-          }`}>
-            {status === 'draft' ? 'Draft' : 'Published'}
-          </span>
+
+        {/* Print Content */}
+        <div className="bg-white border border-gray-200 rounded-b-lg p-6 -mx-4 space-y-6">
+          {/* Basic Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Basic Information</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-500">Team:</span>
+                <span className="ml-2 font-medium">{getTeamName(teamId)}</span>
+              </div>
+              {directSupervisor && (
+                <div>
+                  <span className="text-gray-500">Direct Supervisor:</span>
+                  <span className="ml-2 font-medium">{directSupervisor}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Job Purpose */}
+          {jobPurpose && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Job Purpose (วัตถุประสงค์ของงาน)</h3>
+              <p className="text-gray-700 leading-relaxed text-sm">{jobPurpose}</p>
+            </div>
+          )}
+
+          {/* Responsibilities */}
+          {getAllResponsibilities().length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Responsibilities (หน้าที่ความรับผิดชอบ)</h3>
+              <div className="space-y-4">
+                {getAllResponsibilities().map((respGroup) => (
+                  <div key={respGroup.category} className="bg-gray-50 rounded-lg p-3">
+                    <h4 className="font-medium text-gray-700 mb-2 text-sm">{respGroup.categoryLabel}</h4>
+                    <ul className="space-y-1">
+                      {respGroup.items.map((item, idx) => (
+                        <li key={idx} className="flex items-start text-sm">
+                          <span className="text-gray-400 mr-2">•</span>
+                          <span className="text-gray-600">{item.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Core Competencies with Spider Chart */}
+          {getSpiderChartData().length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Core Competencies (สมรรถนะหลัก)</h3>
+
+              {/* Spider Chart */}
+              <div className="flex justify-center mb-4">
+                <SpiderChart data={getSpiderChartData()} size={280} />
+              </div>
+
+              {/* Competency Details Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                {getSpiderChartData().map((item, index) => (
+                  <div key={index} className="bg-gray-50 rounded-lg p-3 flex justify-between items-center">
+                    <span className="font-medium text-gray-700 text-sm">{item.name}</span>
+                    <span className={`font-bold text-sm ${
+                      item.score >= 4 ? 'text-green-600' : item.score >= 3 ? 'text-yellow-600' : 'text-red-600'
+                    }`}>
+                      {item.score}/5
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Risks */}
+          {(externalRisks.some(r => r.description.trim()) || internalRisks.some(r => r.description.trim())) && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Risk Factors (ความเสี่ยง)</h3>
+              <div className="space-y-4">
+                {externalRisks.filter(r => r.description.trim()).length > 0 && (
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <h4 className="font-medium text-gray-700 mb-2 text-sm">External Risks (ความเสี่ยงภายนอก)</h4>
+                    <ul className="space-y-1">
+                      {externalRisks.filter(r => r.description.trim()).map((risk, idx) => (
+                        <li key={idx} className="flex items-start text-sm">
+                          <span className="text-gray-400 mr-2">•</span>
+                          <span className="text-gray-600">{risk.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {internalRisks.filter(r => r.description.trim()).length > 0 && (
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <h4 className="font-medium text-gray-700 mb-2 text-sm">Internal Risks (ความเสี่ยงภายใน)</h4>
+                    <ul className="space-y-1">
+                      {internalRisks.filter(r => r.description.trim()).map((risk, idx) => (
+                        <li key={idx} className="flex items-start text-sm">
+                          <span className="text-gray-400 mr-2">•</span>
+                          <span className="text-gray-600">{risk.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Footer */}
+          <div className="text-center text-xs text-gray-400 pt-4 border-t">
+            Job Description Management System • Printed on {new Date().toLocaleDateString('th-TH')}
+          </div>
         </div>
       </div>
+
+      {/* Screen Version - Edit Form */}
+      <div className="print:hidden">
+        {/* Header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="secondary"
+              onClick={handleCancel}
+              icon={<ArrowLeft className="w-4 h-4" />}
+            >
+              Back
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold text-primary-600">{position || 'Edit Job Description'}</h1>
+              <p className="text-primary-400 mt-1">Update the job description details</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="secondary"
+              onClick={handlePrint}
+              icon={<Printer className="w-4 h-4" />}
+            >
+              Print
+            </Button>
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+              status === 'draft' ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-600'
+            }`}>
+              {status === 'draft' ? 'Draft' : 'Published'}
+            </span>
+          </div>
+        </div>
 
       {/* Main Form Card */}
       <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 p-6 shadow-sm space-y-6">
@@ -1080,6 +1274,7 @@ export const EditJDPage = () => {
             </Button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
