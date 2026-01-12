@@ -79,11 +79,14 @@ export const jobDescriptionsAPI = {
 
     console.log('Risks:', risks?.length || 0);
 
-    // Fetch related competencies
+    // Fetch related competencies with competency names
     console.log('Fetching competencies...');
     const { data: competencies } = await supabase
       .from('jd_competencies')
-      .select('*')
+      .select(`
+        *,
+        competency:competencies(id, name)
+      `)
       .eq('jd_id', id);
 
     console.log('Competencies:', competencies?.length || 0);
