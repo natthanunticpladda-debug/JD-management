@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Building, Users, MapPin, Award } from 'lucide-react';
+import { Building, Users, MapPin, Award, Layers, TrendingUp } from 'lucide-react';
 
 export const SettingsPage = () => {
   const settings = [
@@ -7,12 +7,14 @@ export const SettingsPage = () => {
     { name: 'Teams', icon: Users, href: '/settings/teams' },
     { name: 'Locations', icon: MapPin, href: '/settings/locations' },
     { name: 'Competencies', icon: Award, href: '/settings/competencies' },
+    { name: 'Job Bands', icon: Layers, href: '/settings/job-bands' },
+    { name: 'Job Grades', icon: TrendingUp, href: '/settings/job-grades' },
   ];
 
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Settings</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {settings.map((setting) => (
           <Link
             key={setting.name}

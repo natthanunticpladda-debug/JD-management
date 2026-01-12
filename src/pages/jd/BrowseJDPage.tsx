@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useJobDescriptions } from '../../hooks/useJobDescriptions';
 import { useLocations } from '../../hooks/useLocations';
 import { useDepartments } from '../../hooks/useDepartments';
+import { useJobBands } from '../../hooks/useJobBands';
+import { useJobGrades } from '../../hooks/useJobGrades';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -35,6 +37,8 @@ export const BrowseJDPage = () => {
   } = useJobDescriptions();
   const { locations } = useLocations();
   const { departments } = useDepartments();
+  const { jobBands } = useJobBands();
+  const { jobGrades } = useJobGrades();
 
   const [filters, setFilters] = useState<JobDescriptionFilters>({});
   const [showFilters, setShowFilters] = useState(false);
@@ -42,20 +46,38 @@ export const BrowseJDPage = () => {
 
   const canEdit = user?.role === 'admin' || user?.role === 'manager';
 
+  // Get available job grades based on selected job band
+  const getAvailableGrades = () => {
+    if (!filters.jobBand) return [];
+    const selectedBand = jobBands.find(b => b.name === filters.jobBand);
+    if (!selectedBand) return [];
+    return jobGrades.filter(g => g.job_band_id === selectedBand.id);
+  };
+
   // Apply filters when they change
   useEffect(() => {
     fetchJobDescriptions(filters);
-  }, [filters, fetchJobDescriptions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.search, filters.status, filters.departmentId, filters.locationId, filters.jobBand, filters.jobGrade]);
 
   const handleSearch = (search: string) => {
     setFilters(prev => ({ ...prev, search: search || undefined }));
   };
 
   const handleFilterChange = (key: keyof JobDescriptionFilters, value: string) => {
-    setFilters(prev => ({ 
-      ...prev, 
-      [key]: value || undefined 
-    }));
+    // If changing job band, clear job grade
+    if (key === 'jobBand') {
+      setFilters(prev => ({ 
+        ...prev, 
+        jobBand: value || undefined,
+        jobGrade: undefined // Clear job grade when band changes
+      }));
+    } else {
+      setFilters(prev => ({ 
+        ...prev, 
+        [key]: value || undefined 
+      }));
+    }
   };
 
   const clearFilters = () => {
@@ -185,7 +207,7 @@ export const BrowseJDPage = () => {
         {/* Filters */}
         {showFilters && (
           <div className="mt-4 pt-4 border-t border-primary-100">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <Select
                 label="Status"
                 value={filters.status || ''}
@@ -229,11 +251,25 @@ export const BrowseJDPage = () => {
                 onChange={(e) => handleFilterChange('jobBand', e.target.value)}
               >
                 <option value="">All Job Bands</option>
-                <option value="JB 1">JB 1</option>
-                <option value="JB 2">JB 2</option>
-                <option value="JB 3">JB 3</option>
-                <option value="JB 4">JB 4</option>
-                <option value="JB 5">JB 5</option>
+                {jobBands.map((band) => (
+                  <option key={band.id} value={band.name}>
+                    {band.name}
+                  </option>
+                ))}
+              </Select>
+
+              <Select
+                label="Job Grade"
+                value={filters.jobGrade || ''}
+                onChange={(e) => handleFilterChange('jobGrade', e.target.value)}
+                disabled={!filters.jobBand}
+              >
+                <option value="">All Job Grades</option>
+                {getAvailableGrades().map((grade) => (
+                  <option key={grade.id} value={grade.name}>
+                    {grade.name}
+                  </option>
+                ))}
               </Select>
             </div>
 

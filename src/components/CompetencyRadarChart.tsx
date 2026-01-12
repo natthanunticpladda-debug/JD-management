@@ -1,4 +1,4 @@
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface Competency {
   id: string;
@@ -15,6 +15,24 @@ interface CompetencyScore {
 interface CompetencyRadarChartProps {
   competencies: CompetencyScore[];
 }
+
+// Custom label component to show values on data points
+const CustomLabel = (props: any) => {
+  const { x, y, value } = props;
+  return (
+    <text
+      x={x}
+      y={y}
+      dy={5}
+      fill="#dc2626"
+      fontSize={14}
+      fontWeight="bold"
+      textAnchor="middle"
+    >
+      {value}
+    </text>
+  );
+};
 
 export const CompetencyRadarChart = ({ competencies }: CompetencyRadarChartProps) => {
   // Transform data for radar chart
@@ -57,6 +75,14 @@ export const CompetencyRadarChart = ({ competencies }: CompetencyRadarChartProps
             tick={{ fill: '#9ca3af', fontSize: 12 }}
             tickCount={6}
           />
+          <Tooltip 
+            contentStyle={{ 
+              backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              padding: '8px 12px'
+            }}
+          />
           <Radar
             name="Score"
             dataKey="score"
@@ -64,6 +90,7 @@ export const CompetencyRadarChart = ({ competencies }: CompetencyRadarChartProps
             fill="#fbbf24"
             fillOpacity={0.6}
             strokeWidth={2}
+            label={<CustomLabel />}
           />
         </RadarChart>
       </ResponsiveContainer>

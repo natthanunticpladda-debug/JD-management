@@ -41,6 +41,251 @@ export const ViewJDPage = () => {
 
   const canEdit = user?.role === 'admin' || user?.role === 'manager';
 
+  // Add print styles
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @media print {
+        @page {
+          size: A4;
+          margin: 15mm 20mm 15mm 25mm;
+        }
+        
+        body {
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        /* Hide navigation and non-essential elements */
+        nav, .print\\:hidden {
+          display: none !important;
+        }
+        
+        /* Main container */
+        .bg-white\\/60 {
+          background: white !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+        
+        /* Executive Header - Professional styling */
+        .print-header {
+          background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%) !important;
+          color: white !important;
+          padding: 25px 30px !important;
+          margin: -15mm -20mm 20px -25mm !important;
+          border-radius: 0 !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+          page-break-after: avoid !important;
+        }
+        
+        .print-header h1 {
+          font-size: 28pt !important;
+          font-weight: 700 !important;
+          margin-bottom: 12px !important;
+          letter-spacing: -0.5px !important;
+        }
+        
+        .print-header .text-accent-100 {
+          font-size: 11pt !important;
+          opacity: 0.95 !important;
+        }
+        
+        /* Content sections - Allow natural flow */
+        .print-content {
+          padding: 0 !important;
+          max-width: 100% !important;
+        }
+        
+        .print-content > div {
+          margin-bottom: 20px !important;
+        }
+        
+        /* Section headers - Keep with content */
+        .print-section {
+          page-break-inside: auto !important;
+          break-inside: auto !important;
+        }
+        
+        .print-section h3 {
+          font-size: 14pt !important;
+          font-weight: 600 !important;
+          color: #1a1a1a !important;
+          margin-top: 0 !important;
+          margin-bottom: 12px !important;
+          padding-bottom: 8px !important;
+          border-bottom: 2px solid #007AFF !important;
+          letter-spacing: -0.2px !important;
+          page-break-after: avoid !important;
+          orphans: 3 !important;
+          widows: 3 !important;
+        }
+        
+        /* Content boxes - Allow breaking if needed */
+        .bg-primary-50\\/50 {
+          background: #f8f9fa !important;
+          border: 1px solid #e1e4e8 !important;
+          border-radius: 6px !important;
+          padding: 16px 20px !important;
+          margin-bottom: 12px !important;
+          page-break-inside: auto !important;
+          overflow: visible !important;
+        }
+        
+        /* Text styling for readability */
+        .text-primary-600, .text-primary-700 {
+          color: #2c3e50 !important;
+          line-height: 1.6 !important;
+        }
+        
+        .text-primary-400, .text-primary-500 {
+          color: #5a6c7d !important;
+        }
+        
+        /* Lists - Better spacing and allow breaks */
+        ul {
+          margin: 8px 0 !important;
+          padding-left: 20px !important;
+          page-break-inside: auto !important;
+        }
+        
+        li {
+          margin-bottom: 6px !important;
+          line-height: 1.5 !important;
+          page-break-inside: avoid !important;
+          orphans: 2 !important;
+          widows: 2 !important;
+        }
+        
+        /* Competency section - Allow page breaks but keep chart intact */
+        .competency-chart-container {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          margin: 20px 0 !important;
+          padding: 25px !important;
+          background: white !important;
+          border: 1px solid #e1e4e8 !important;
+          border-radius: 8px !important;
+        }
+        
+        /* Competency grid - Allow breaking between items */
+        .print-section .grid {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr !important;
+          gap: 12px !important;
+          margin-top: 15px !important;
+          page-break-inside: auto !important;
+        }
+        
+        .print-section .grid > div {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+        
+        /* Risk sections - Allow breaking */
+        .border-red-200, .border-blue-200 {
+          border-color: #d1d5db !important;
+          page-break-inside: auto !important;
+        }
+        
+        .bg-red-50, .bg-blue-50 {
+          background: #f3f4f6 !important;
+        }
+        
+        .border-red-500, .border-blue-500 {
+          border-left-color: #6b7280 !important;
+        }
+        
+        .text-red-600, .text-blue-600 {
+          color: #374151 !important;
+        }
+        
+        /* Responsibilities categories - Allow breaking between categories */
+        .print-section .space-y-4 {
+          page-break-inside: auto !important;
+        }
+        
+        .print-section .space-y-4 > div {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          margin-bottom: 12px !important;
+          orphans: 2 !important;
+          widows: 2 !important;
+        }
+        
+        /* Typography refinements */
+        h4 {
+          font-size: 11pt !important;
+          font-weight: 600 !important;
+          color: #1a1a1a !important;
+          margin-bottom: 8px !important;
+          page-break-after: avoid !important;
+        }
+        
+        p {
+          font-size: 10pt !important;
+          line-height: 1.6 !important;
+          orphans: 2 !important;
+          widows: 2 !important;
+        }
+        
+        /* Icons - Subtle in print */
+        svg {
+          opacity: 0.7 !important;
+        }
+        
+        /* Ensure consistent font sizes */
+        .text-sm {
+          font-size: 9pt !important;
+        }
+        
+        .text-xs {
+          font-size: 8pt !important;
+        }
+        
+        /* Professional spacing for info items */
+        .space-y-2 > div {
+          margin-bottom: 8px !important;
+        }
+        
+        /* Clean borders */
+        .rounded-lg, .rounded-2xl {
+          border-radius: 6px !important;
+        }
+        
+        /* Prevent content clipping */
+        * {
+          overflow: visible !important;
+        }
+        
+        /* Ensure all content is visible */
+        .overflow-hidden {
+          overflow: visible !important;
+        }
+        
+        /* Risk list items */
+        .rounded-lg.overflow-hidden {
+          overflow: visible !important;
+        }
+        
+        .rounded-lg.overflow-hidden ul {
+          page-break-inside: auto !important;
+        }
+        
+        /* Better orphan/widow control */
+        h1, h2, h3, h4, h5, h6 {
+          page-break-after: avoid !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   useEffect(() => {
     if (id) {
       loadJobDescription();
@@ -216,7 +461,7 @@ export const ViewJDPage = () => {
       {/* Job Description Content */}
       <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-accent-500 to-accent-600 px-8 py-6 text-white">
+        <div className="bg-gradient-to-r from-accent-500 to-accent-600 px-8 py-6 text-white print-header">
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-bold mb-2">{jd.position}</h1>
@@ -234,7 +479,7 @@ export const ViewJDPage = () => {
                 </span>
               </div>
             </div>
-            <div className="text-right flex flex-col items-end gap-2">
+            <div className="text-right flex flex-col items-end gap-2 print:hidden">
               {getStatusBadge(jd.status)}
               <div className="text-accent-100 text-sm">
                 Updated {formatDate(jd.updated_at)}
@@ -251,11 +496,11 @@ export const ViewJDPage = () => {
           </div>
         </div>
 
-        <div className="p-8 space-y-8">
+        <div className="p-8 space-y-8 print-content">
           {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold text-primary-600 mb-3">Basic Information</h3>
+          <div className="print-section">
+            <h3 className="text-lg font-semibold text-primary-600 mb-3">Basic Information</h3>
+            <div className="bg-primary-50/50 rounded-lg p-4">
               <div className="space-y-2">
                 <div className="flex items-center">
                   <Users className="w-4 h-4 text-primary-400 mr-2" />
@@ -279,15 +524,17 @@ export const ViewJDPage = () => {
           </div>
 
           {/* Job Purpose */}
-          <div>
-            <h3 className="text-lg font-semibold text-primary-600 mb-3">Job Purpose</h3>
-            <p className="text-primary-700 leading-relaxed">{jd.job_purpose}</p>
+          <div className="print-section">
+            <h3 className="text-lg font-semibold text-primary-600 mb-3">Job Purpose (วัตถุประสงค์ของงาน)</h3>
+            <div className="bg-primary-50/50 rounded-lg p-4">
+              <p className="text-primary-700 leading-relaxed">{jd.job_purpose}</p>
+            </div>
           </div>
 
           {/* Responsibilities */}
           {jd.responsibilities && jd.responsibilities.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-primary-600 mb-4">Responsibilities</h3>
+            <div className="print-section">
+              <h3 className="text-lg font-semibold text-primary-600 mb-4">Responsibilities (หน้าที่ความรับผิดชอบ)</h3>
               <div className="space-y-4">
                 {Object.entries(
                   jd.responsibilities.reduce((acc, resp) => {
@@ -295,34 +542,46 @@ export const ViewJDPage = () => {
                     acc[resp.category].push(resp);
                     return acc;
                   }, {} as Record<string, typeof jd.responsibilities>)
-                ).map(([category, items]) => (
-                  <div key={category} className="bg-primary-50/50 rounded-lg p-4">
-                    <h4 className="font-medium text-primary-600 mb-2 capitalize">
-                      {category.replace('_', ' ')}
-                    </h4>
-                    <ul className="space-y-1">
-                      {items.map((item, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="text-primary-400 mr-2">•</span>
-                          <span className="text-primary-700">{item.description}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                ).map(([category, items]) => {
+                  // Map category names to Thai labels
+                  const categoryLabels: Record<string, string> = {
+                    'strategic': 'Strategic (เชิงกลยุทธ์)',
+                    'team_management': 'Team Management & Development',
+                    'general': 'General (งานทั่วไป)',
+                    'culture': 'Culture (วัฒนธรรม)',
+                    'efficiency': 'Efficiency (ประสิทธิภาพ)',
+                    'other': 'Other (อื่นๆ)'
+                  };
+                  
+                  return (
+                    <div key={category} className="bg-primary-50/50 rounded-lg p-4">
+                      <h4 className="font-medium text-primary-600 mb-2">
+                        {categoryLabels[category] || category.replace('_', ' ')}
+                      </h4>
+                      <ul className="space-y-1">
+                        {items.map((item, index) => (
+                          <li key={index} className="flex items-start">
+                            <span className="text-primary-400 mr-2">•</span>
+                            <span className="text-primary-700">{item.description}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
 
           {/* Competencies */}
           {jd.competencies && jd.competencies.length > 0 && (
-            <div>
+            <div className="print-section">
               <h3 className="text-lg font-semibold text-primary-600 mb-4">
                 Core Competencies (สมรรถนะหลัก)
               </h3>
               
               {/* Spider Chart */}
-              <div className="bg-white rounded-lg p-6 mb-6 border border-primary-100">
+              <div className="bg-white rounded-lg p-6 mb-6 border border-primary-100 competency-chart-container">
                 <CompetencyRadarChart competencies={jd.competencies} />
               </div>
 
@@ -349,14 +608,14 @@ export const ViewJDPage = () => {
 
           {/* Risks */}
           {jd.risks && jd.risks.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-primary-600 mb-4">Risk Factors</h3>
+            <div className="print-section">
+              <h3 className="text-lg font-semibold text-primary-600 mb-4">Risk Factors (ความเสี่ยง)</h3>
               <div className="space-y-4">
                 {/* External Risks */}
                 {jd.risks.filter(r => r.type === 'external').length > 0 && (
                   <div className="rounded-lg overflow-hidden border border-red-200">
                     <div className="bg-red-50 px-4 py-2 border-l-4 border-red-500">
-                      <h4 className="font-semibold text-red-600">External Risks</h4>
+                      <h4 className="font-semibold text-red-600">External Risks (ความเสี่ยงภายนอก)</h4>
                     </div>
                     <ul className="p-4 space-y-2 bg-white">
                       {jd.risks.filter(r => r.type === 'external').map((item, index) => (
@@ -372,7 +631,7 @@ export const ViewJDPage = () => {
                 {jd.risks.filter(r => r.type === 'internal').length > 0 && (
                   <div className="rounded-lg overflow-hidden border border-blue-200">
                     <div className="bg-blue-50 px-4 py-2 border-l-4 border-blue-500">
-                      <h4 className="font-semibold text-blue-600">Internal Risks</h4>
+                      <h4 className="font-semibold text-blue-600">Internal Risks (ความเสี่ยงภายใน)</h4>
                     </div>
                     <ul className="p-4 space-y-2 bg-white">
                       {jd.risks.filter(r => r.type === 'internal').map((item, index) => (

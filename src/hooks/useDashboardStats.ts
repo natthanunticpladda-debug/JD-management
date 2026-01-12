@@ -14,6 +14,13 @@ interface DashboardStats {
   recentActivities: number;
   jdsByDepartment: Array<{ name: string; count: number }>;
   jdsByStatus: Array<{ status: string; count: number }>;
+  jdsByDepartmentAndStatus: Array<{ 
+    name: string; 
+    published: number; 
+    draft: number; 
+    archived: number;
+    total: number;
+  }>;
   topCompetencies: Array<{ name: string; count: number }>;
 }
 
@@ -30,6 +37,7 @@ export const useDashboardStats = () => {
     recentActivities: 0,
     jdsByDepartment: [],
     jdsByStatus: [],
+    jdsByDepartmentAndStatus: [],
     topCompetencies: [],
   });
   const [loading, setLoading] = useState(true);
@@ -72,6 +80,28 @@ export const useDashboardStats = () => {
         { status: 'Draft', count: draftJDs },
         { status: 'Archived', count: archivedJDs },
       ];
+
+      // Count JDs by department AND status (for stacked bar chart)
+      const deptStatusCounts = jds?.reduce((acc: Record<string, { published: number; draft: number; archived: number }>, jd: any) => {
+        const deptName = jd.department?.name || 'Unknown';
+        if (!acc[deptName]) {
+          acc[deptName] = { published: 0, draft: 0, archived: 0 };
+        }
+        if (jd.status === 'published') acc[deptName].published++;
+        else if (jd.status === 'draft') acc[deptName].draft++;
+        else if (jd.status === 'archived') acc[deptName].archived++;
+        return acc;
+      }, {});
+
+      const jdsByDepartmentAndStatus = Object.entries(deptStatusCounts || {})
+        .map(([name, counts]) => ({
+          name,
+          published: counts.published,
+          draft: counts.draft,
+          archived: counts.archived,
+          total: counts.published + counts.draft + counts.archived,
+        }))
+        .sort((a, b) => b.total - a.total);
 
       // Fetch user stats
       const { data: users, error: userError } = await supabase
@@ -138,6 +168,7 @@ export const useDashboardStats = () => {
         recentActivities: activityCount || 0,
         jdsByDepartment,
         jdsByStatus,
+        jdsByDepartmentAndStatus,
         topCompetencies,
       });
     } catch (error: any) {

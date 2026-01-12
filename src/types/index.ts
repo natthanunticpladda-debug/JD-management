@@ -102,6 +102,23 @@ export interface Competency {
   updated_at: string;
 }
 
+export interface JobBandEntity {
+  id: string;
+  name: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface JobGradeEntity {
+  id: string;
+  name: string;
+  job_band_id: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface JobDescription {
   id: string;
   position: string;
@@ -281,4 +298,5 @@ export interface JobDescriptionFilters {
   departmentId?: string;
   locationId?: string;
   jobBand?: JobBand;
+  jobGrade?: JobGrade;
 }

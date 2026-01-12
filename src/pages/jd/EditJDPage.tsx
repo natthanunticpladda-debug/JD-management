@@ -6,6 +6,8 @@ import { useLocations } from '../../hooks/useLocations';
 import { useDepartments } from '../../hooks/useDepartments';
 import { useTeams } from '../../hooks/useTeams';
 import { useCompetencies } from '../../hooks/useCompetencies';
+import { useJobBands } from '../../hooks/useJobBands';
+import { useJobGrades } from '../../hooks/useJobGrades';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
@@ -17,7 +19,6 @@ import type {
   JobBand,
   JobGrade,
 } from '../../types';
-import { JOB_GRADES } from '../../types';
 import toast from 'react-hot-toast';
 
 const JOB_BANDS: JobBand[] = ['JB 1', 'JB 2', 'JB 3', 'JB 4', 'JB 5'];
@@ -58,6 +59,8 @@ export const EditJDPage = () => {
   const { departments } = useDepartments();
   const { teams } = useTeams();
   const { competencies } = useCompetencies();
+  const { jobBands } = useJobBands();
+  const { jobGrades } = useJobGrades();
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -216,8 +219,11 @@ export const EditJDPage = () => {
   // Get available job grades based on job band
   const getAvailableGrades = (): JobGrade[] => {
     if (!jobBand) return [];
-    const bandNumber = jobBand.replace('JB ', '');
-    return JOB_GRADES.filter(grade => grade.startsWith(`JG ${bandNumber}`));
+    const selectedBand = jobBands.find(b => b.name === jobBand);
+    if (!selectedBand) return [];
+    return jobGrades
+      .filter(g => g.job_band_id === selectedBand.id)
+      .map(g => g.name as JobGrade);
   };
   // Responsibility handlers
   const addResponsibility = (category: string) => {
@@ -754,9 +760,9 @@ export const EditJDPage = () => {
             }}
           >
             <option value="">Select job band</option>
-            {JOB_BANDS.map((band) => (
-              <option key={band} value={band}>
-                {band}
+            {jobBands.map((band) => (
+              <option key={band.id} value={band.name}>
+                {band.name}
               </option>
             ))}
           </Select>

@@ -13,26 +13,21 @@ import {
   Archive,
   Plus,
   TrendingUp,
-  Award,
 } from 'lucide-react';
 import {
   BarChart,
   Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  LabelList,
 } from 'recharts';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
   const { stats, loading } = useDashboardStats();
-
-  const COLORS = ['#22c55e', '#eab308', '#9ca3af'];
 
   if (loading) {
     return (
@@ -159,106 +154,102 @@ export const DashboardPage = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* JDs by Status Pie Chart */}
+      <div className="mb-8">
+        {/* Combined JDs by Department and Status - Stacked Bar Chart */}
         <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 p-6">
-          <h2 className="text-body-lg font-semibold text-primary-600 mb-6">JDs by Status</h2>
-          {stats.jdsByStatus.some((item) => item.count > 0) ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={stats.jdsByStatus}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }: { name?: string; percent?: number }) =>
-                    name && percent && percent > 0 ? `${name} ${(percent * 100).toFixed(0)}%` : ''
-                  }
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="count"
-                >
-                  {stats.jdsByStatus.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[300px] flex items-center justify-center text-primary-400">
-              <p className="text-body-sm">No data available</p>
-            </div>
-          )}
-        </div>
-
-        {/* JDs by Department Bar Chart */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 p-6">
-          <h2 className="text-body-lg font-semibold text-primary-600 mb-6">
-            Top Departments by JDs
+          <h2 className="text-body-lg font-semibold text-primary-600 mb-4">
+            JDs by Department and Status
           </h2>
-          {stats.jdsByDepartment.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats.jdsByDepartment}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '12px',
-                  }}
-                />
-                <Bar dataKey="count" fill="#007AFF" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[300px] flex items-center justify-center text-primary-400">
-              <p className="text-body-sm">No data available</p>
+          
+          {/* Legend */}
+          <div className="flex flex-wrap gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-green-500"></div>
+              <span className="text-caption text-primary-600">Published - พร้อมใช้งาน</span>
             </div>
-          )}
-        </div>
-      </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-yellow-500"></div>
+              <span className="text-caption text-primary-600">Draft - ร่าง</span>
+            </div>
+          </div>
 
-      {/* Top Competencies */}
-      <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Award className="w-6 h-6 text-accent-600" />
-          <h2 className="text-body-lg font-semibold text-primary-600">
-            Top 5 Most Required Competencies
-          </h2>
-        </div>
-        {stats.topCompetencies.length > 0 ? (
-          <div className="space-y-4">
-            {stats.topCompetencies.map((comp, index) => (
-              <div key={comp.name} className="flex items-center gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-accent-100 rounded-full flex items-center justify-center">
-                  <span className="text-body-sm font-semibold text-accent-600">{index + 1}</span>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-body font-medium text-primary-600">{comp.name}</span>
-                    <span className="text-body-sm text-primary-400">{comp.count} JDs</span>
+          {stats.jdsByDepartmentAndStatus.length > 0 ? (
+            <>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={stats.jdsByDepartmentAndStatus}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fontSize: 12 }}
+                    angle={-15}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 12 }}
+                    allowDecimals={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '12px',
+                      padding: '8px 12px',
+                    }}
+                    formatter={(value: number | undefined, name: string | undefined) => {
+                      if (value === undefined || name === undefined) return ['', ''];
+                      return [
+                        `${value} JDs`,
+                        name === 'published' ? 'Published (พร้อมใช้งาน)' : 
+                        name === 'draft' ? 'Draft (ร่าง)' : name
+                      ];
+                    }}
+                  />
+                  <Bar dataKey="published" stackId="a" fill="#22c55e" radius={[0, 0, 0, 0]}>
+                    <LabelList 
+                      dataKey="published" 
+                      position="inside" 
+                      style={{ fill: 'white', fontSize: '12px', fontWeight: 'bold' }}
+                      formatter={(value: any) => value > 0 ? value : ''}
+                    />
+                  </Bar>
+                  <Bar dataKey="draft" stackId="a" fill="#eab308" radius={[8, 8, 0, 0]}>
+                    <LabelList 
+                      dataKey="draft" 
+                      position="inside" 
+                      style={{ fill: 'white', fontSize: '12px', fontWeight: 'bold' }}
+                      formatter={(value: any) => value > 0 ? value : ''}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+              
+              {/* Summary Stats */}
+              <div className="mt-6 pt-6 border-t border-primary-100">
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-heading-3 font-bold text-primary-600">
+                      {stats.jdsByDepartmentAndStatus.length}
+                    </p>
+                    <p className="text-caption text-primary-400 mt-1">Total Departments</p>
                   </div>
-                  <div className="w-full bg-primary-100 rounded-full h-2">
-                    <div
-                      className="bg-accent-500 h-2 rounded-full transition-all duration-300"
-                      style={{
-                        width: `${(comp.count / stats.topCompetencies[0].count) * 100}%`,
-                      }}
-                    ></div>
+                  <div>
+                    <p className="text-heading-3 font-bold text-green-600">{stats.publishedJDs}</p>
+                    <p className="text-caption text-primary-400 mt-1">Published</p>
+                  </div>
+                  <div>
+                    <p className="text-heading-3 font-bold text-yellow-600">{stats.draftJDs}</p>
+                    <p className="text-caption text-primary-400 mt-1">Drafts</p>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 text-primary-400">
-            <Award className="w-12 h-12 mx-auto mb-3 opacity-30" />
-            <p className="text-body-sm">No competency data available</p>
-          </div>
-        )}
+            </>
+          ) : (
+            <div className="h-[400px] flex items-center justify-center text-primary-400">
+              <p className="text-body-sm">No data available</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

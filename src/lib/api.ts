@@ -16,18 +16,55 @@ import type {
 // Job Descriptions API
 export const jobDescriptionsAPI = {
   // Get all job descriptions with optional filters
-  getAll: async (_filters?: JobDescriptionFilters): Promise<JobDescriptionAPI[]> => {
+  getAll: async (filters?: JobDescriptionFilters): Promise<JobDescriptionAPI[]> => {
     try {
-      // Query with relations
-      const { data, error } = await supabase
+      // Start with base query
+      let query = supabase
         .from('job_descriptions')
         .select(`
           *,
           location:locations(id, name),
           department:departments(id, name),
           team:teams(id, name)
-        `)
-        .order('updated_at', { ascending: false });
+        `);
+
+      // Apply filters
+      if (filters) {
+        // Status filter
+        if (filters.status) {
+          query = query.eq('status', filters.status);
+        }
+
+        // Department filter
+        if (filters.departmentId) {
+          query = query.eq('department_id', filters.departmentId);
+        }
+
+        // Location filter
+        if (filters.locationId) {
+          query = query.eq('location_id', filters.locationId);
+        }
+
+        // Job Band filter
+        if (filters.jobBand) {
+          query = query.eq('job_band', filters.jobBand);
+        }
+
+        // Job Grade filter
+        if (filters.jobGrade) {
+          query = query.eq('job_grade', filters.jobGrade);
+        }
+
+        // Search filter (search in position field)
+        if (filters.search) {
+          query = query.ilike('position', `%${filters.search}%`);
+        }
+      }
+
+      // Order by updated_at descending
+      query = query.order('updated_at', { ascending: false });
+
+      const { data, error } = await query;
 
       if (error) {
         console.error('Supabase Error:', error);
@@ -718,4 +755,148 @@ export const usersAPI = {
   },
 };
 
-export default { jobDescriptionsAPI, locationsAPI, departmentsAPI, teamsAPI, competenciesAPI, usersAPI };
+// Job Bands API
+export const jobBandsAPI = {
+  getAll: async (): Promise<JobBandEntity[]> => {
+    const { data, error } = await supabase
+      .from('job_bands')
+      .select('*')
+      .order('order_index');
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  create: async (bandData: { name: string; order_index: number }): Promise<JobBandEntity> => {
+    const { data, error } = await supabase
+      .from('job_bands')
+      .insert([bandData])
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  update: async (id: string, updates: { name?: string; order_index?: number }): Promise<JobBandEntity> => {
+    const { data, error } = await supabase
+      .from('job_bands')
+      .update(updates)
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from('job_bands')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+  },
+};
+
+// Job Grades API
+export const jobGradesAPI = {
+  getAll: async (): Promise<JobGradeEntity[]> => {
+    const { data, error } = await supabase
+      .from('job_grades')
+      .select('*')
+      .order('order_index');
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  getByBand: async (bandId: string): Promise<JobGradeEntity[]> => {
+    const { data, error } = await supabase
+      .from('job_grades')
+      .select('*')
+      .eq('job_band_id', bandId)
+      .order('order_index');
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  create: async (gradeData: { name: string; job_band_id: string; order_index: number }): Promise<JobGradeEntity> => {
+    const { data, error } = await supabase
+      .from('job_grades')
+      .insert([gradeData])
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  update: async (id: string, updates: { name?: string; job_band_id?: string; order_index?: number }): Promise<JobGradeEntity> => {
+    const { data, error } = await supabase
+      .from('job_grades')
+      .update(updates)
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+
+    return data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from('job_grades')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw error;
+    }
+  },
+};
+
+export default { 
+  jobDescriptionsAPI, 
+  locationsAPI, 
+  departmentsAPI, 
+  teamsAPI, 
+  competenciesAPI, 
+  jobBandsAPI,
+  jobGradesAPI,
+  usersAPI 
+};
