@@ -960,49 +960,6 @@ export const EditJDPage = () => {
           </Select>
         </div>
 
-        {/* Company Assets */}
-        <div>
-          <label className="block text-sm font-medium text-gray-900 mb-1">
-            Company Assets (ทรัพย์สินบริษัท)
-          </label>
-          <p className="text-sm text-gray-600 mb-3">
-            เลือกทรัพย์สินบริษัทที่จะมอบให้กับตำแหน่งนี้ (สามารถเลือกได้หลายรายการ)
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {assets.map((asset) => (
-              <label
-                key={asset.id}
-                className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                  selectedAssets.includes(asset.id)
-                    ? 'border-accent-500 bg-accent-50'
-                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedAssets.includes(asset.id)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedAssets([...selectedAssets, asset.id]);
-                    } else {
-                      setSelectedAssets(selectedAssets.filter(id => id !== asset.id));
-                    }
-                  }}
-                  className="h-4 w-4 text-accent-600 focus:ring-accent-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-sm font-medium text-gray-900">{asset.name}</span>
-              </label>
-            ))}
-            {assets.length === 0 && (
-              <div className="col-span-full">
-                <p className="text-sm text-gray-500 italic">
-                  ยังไม่มีทรัพย์สินบริษัท กรุณาเพิ่มใน Settings → Company Assets
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Job Purpose */}
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-1">
@@ -1428,6 +1385,49 @@ export const EditJDPage = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* Company Assets */}
+        <div className="border-t border-primary-200 pt-6">
+          <label className="block text-base font-semibold text-primary-600 mb-1">
+            Company Assets (ทรัพย์สินบริษัท)
+          </label>
+          <p className="text-sm text-primary-500 mb-3">
+            เลือกทรัพย์สินบริษัทที่จะมอบให้กับตำแหน่งนี้ (สามารถเลือกได้หลายรายการ)
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {assets.map((asset) => (
+              <label
+                key={asset.id}
+                className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                  selectedAssets.includes(asset.id)
+                    ? 'border-accent-500 bg-accent-50'
+                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedAssets.includes(asset.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedAssets([...selectedAssets, asset.id]);
+                    } else {
+                      setSelectedAssets(selectedAssets.filter(id => id !== asset.id));
+                    }
+                  }}
+                  className="h-4 w-4 text-accent-600 focus:ring-accent-500 border-gray-300 rounded"
+                />
+                <span className="ml-2 text-sm font-medium text-gray-900">{asset.name}</span>
+              </label>
+            ))}
+            {assets.length === 0 && (
+              <div className="col-span-full">
+                <p className="text-sm text-gray-500 italic">
+                  ยังไม่มีทรัพย์สินบริษัท กรุณาเพิ่มใน Settings → Company Assets
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
