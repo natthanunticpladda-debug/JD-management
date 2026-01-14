@@ -678,7 +678,7 @@ export const ViewJDPage = () => {
                     return acc;
                   }, {} as Record<string, typeof jd.responsibilities>)
                 ).map(([category, items]) => {
-                  // Map category names to Thai labels
+                  // Map category names to Thai labels and colors
                   const categoryLabels: Record<string, string> = {
                     'strategic': 'Strategic (เชิงกลยุทธ์)',
                     'team_management': 'Team Management & Development',
@@ -688,9 +688,18 @@ export const ViewJDPage = () => {
                     'other': 'Other (อื่นๆ)'
                   };
                   
+                  const categoryColors: Record<string, string> = {
+                    'strategic': 'text-indigo-600',
+                    'team_management': 'text-cyan-600',
+                    'general': 'text-slate-600',
+                    'culture': 'text-rose-600',
+                    'efficiency': 'text-emerald-600',
+                    'other': 'text-gray-600'
+                  };
+                  
                   return (
                     <div key={category} className="bg-primary-50/50 rounded-lg p-4">
-                      <h4 className="font-medium text-primary-600 mb-2 flex items-center gap-2">
+                      <h4 className={`font-medium mb-2 flex items-center gap-2 ${categoryColors[category] || 'text-primary-600'}`}>
                         {getCategoryIcon(category)}
                         {categoryLabels[category] || category.replace('_', ' ')}
                       </h4>
@@ -726,10 +735,21 @@ export const ViewJDPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {jd.competencies.map((comp, index) => {
                   const compName = getCompetencyName(comp.competency_id);
+                  
+                  // Assign colors to each competency
+                  const competencyColors: Record<string, string> = {
+                    'Execution': 'text-blue-600',
+                    'Communication': 'text-purple-600',
+                    'Self Awareness': 'text-teal-600',
+                    'Leadership': 'text-orange-600',
+                    'Business Mind': 'text-indigo-600',
+                    'Long-term Thinking': 'text-pink-600',
+                  };
+                  
                   return (
                     <div key={index} className="bg-primary-50/50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-primary-600 flex items-center gap-2">
+                        <h4 className={`font-medium flex items-center gap-2 ${competencyColors[compName] || 'text-primary-600'}`}>
                           {getCompetencyIcon(compName)}
                           {compName}
                         </h4>
