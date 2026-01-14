@@ -10,7 +10,6 @@ export const CompanyAssetsPage = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newName, setNewName] = useState('');
-  const [newDescription, setNewDescription] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const handleAdd = () => {
@@ -19,9 +18,8 @@ export const CompanyAssetsPage = () => {
       return;
     }
 
-    addAsset(newName.trim(), newDescription.trim() || undefined);
+    addAsset(newName.trim());
     setNewName('');
-    setNewDescription('');
     setIsAdding(false);
     toast.success('Company asset added successfully');
   };
@@ -32,10 +30,9 @@ export const CompanyAssetsPage = () => {
       return;
     }
 
-    updateAsset(id, newName.trim(), newDescription.trim() || undefined);
+    updateAsset(id, newName.trim());
     setEditingId(null);
     setNewName('');
-    setNewDescription('');
     toast.success('Company asset updated successfully');
   };
 
@@ -45,10 +42,9 @@ export const CompanyAssetsPage = () => {
     toast.success('Company asset deleted successfully');
   };
 
-  const startEdit = (id: string, name: string, description?: string) => {
+  const startEdit = (id: string, name: string) => {
     setEditingId(id);
     setNewName(name);
-    setNewDescription(description || '');
     setIsAdding(false);
   };
 
@@ -56,7 +52,6 @@ export const CompanyAssetsPage = () => {
     setEditingId(null);
     setIsAdding(false);
     setNewName('');
-    setNewDescription('');
   };
 
   if (loading) {
@@ -82,7 +77,6 @@ export const CompanyAssetsPage = () => {
             setIsAdding(true);
             setEditingId(null);
             setNewName('');
-            setNewDescription('');
           }}
           icon={<Plus className="w-5 h-5" />}
         >
@@ -104,18 +98,6 @@ export const CompanyAssetsPage = () => {
               placeholder="e.g., Laptop, Mobile Phone"
               required
             />
-            <div>
-              <label className="block text-sm font-medium text-primary-600 mb-2">
-                Description (Optional)
-              </label>
-              <textarea
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)}
-                placeholder="Brief description of the asset"
-                rows={3}
-                className="w-full px-4 py-2 rounded-lg border border-primary-200 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent"
-              />
-            </div>
             <div className="flex gap-2">
               <Button
                 onClick={() => (isAdding ? handleAdd() : handleUpdate(editingId!))}
@@ -139,9 +121,6 @@ export const CompanyAssetsPage = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">
                   Asset Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">
-                  Description
-                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-primary-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -150,7 +129,7 @@ export const CompanyAssetsPage = () => {
             <tbody className="divide-y divide-primary-100">
               {assets.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-6 py-12 text-center">
+                  <td colSpan={2} className="px-6 py-12 text-center">
                     <Package className="w-12 h-12 text-primary-300 mx-auto mb-3" />
                     <p className="text-body text-primary-400">No company assets yet</p>
                     <p className="text-body-sm text-primary-300 mt-1">
@@ -170,16 +149,11 @@ export const CompanyAssetsPage = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-body text-primary-500">
-                        {asset.description || '-'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => startEdit(asset.id, asset.name, asset.description)}
+                          onClick={() => startEdit(asset.id, asset.name)}
                           icon={<Edit2 className="w-4 h-4" />}
                         >
                           Edit
