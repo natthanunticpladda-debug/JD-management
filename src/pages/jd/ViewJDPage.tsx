@@ -567,27 +567,27 @@ export const ViewJDPage = () => {
       <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-accent-500 to-accent-600 px-8 py-8 text-white print-header">
-          <div className="flex items-start justify-between gap-8">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
             {/* Left Section */}
             <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-4">{jd.position}</h1>
-              <div className="flex flex-wrap items-center gap-4 text-accent-50 text-base">
+              <h1 className="text-3xl lg:text-4xl font-bold mb-3 lg:mb-4">{jd.position}</h1>
+              <div className="flex flex-wrap items-center gap-3 lg:gap-4 text-accent-50 text-sm lg:text-base">
                 <span className="font-medium">{jd.job_band} • {jd.job_grade}</span>
                 <span className="text-accent-200">|</span>
                 <span className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5" />
+                  <Building2 className="w-4 h-4 lg:w-5 lg:h-5" />
                   {getDepartmentName(jd.department_id)}
                 </span>
                 <span className="text-accent-200">|</span>
                 <span className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
+                  <MapPin className="w-4 h-4 lg:w-5 lg:h-5" />
                   {getLocationName(jd.location_id)}
                 </span>
               </div>
             </div>
 
             {/* Right Section */}
-            <div className="flex flex-col items-end gap-3">
+            <div className="flex flex-col items-start lg:items-end gap-3">
               {/* Action Buttons */}
               <div className="flex items-center gap-2 print:hidden">
                 {getStatusBadge(jd.status)}
@@ -601,35 +601,35 @@ export const ViewJDPage = () => {
                 )}
               </div>
 
-              {/* Info in single line */}
-              <div className="flex items-center gap-4 text-accent-50 text-base">
+              {/* Info - Responsive Layout */}
+              <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4 text-accent-50 text-sm lg:text-base">
                 <span className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
+                  <Users className="w-4 h-4 lg:w-5 lg:h-5" />
                   <span className="font-medium">Team:</span>
                   {getTeamName(jd.team_id)}
                 </span>
                 
                 {jd.direct_supervisor && (
                   <>
-                    <span className="text-accent-200">|</span>
+                    <span className="hidden lg:inline text-accent-200">|</span>
                     <span className="flex items-center gap-2">
-                      <User className="w-5 h-5" />
+                      <User className="w-4 h-4 lg:w-5 lg:h-5" />
                       <span className="font-medium">Supervisor:</span>
                       {jd.direct_supervisor}
                     </span>
                   </>
                 )}
                 
-                <span className="text-accent-200">|</span>
+                <span className="hidden lg:inline text-accent-200">|</span>
                 <span className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
+                  <Calendar className="w-4 h-4 lg:w-5 lg:h-5" />
                   <span className="font-medium">Published:</span>
                   {formatDate(jd.created_at)}
                 </span>
               </div>
 
               {/* Updated Info */}
-              <div className="text-accent-100 text-sm">
+              <div className="text-accent-100 text-xs lg:text-sm">
                 Last updated {formatDate(jd.updated_at)}
               </div>
             </div>
