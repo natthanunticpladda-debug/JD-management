@@ -587,7 +587,7 @@ export const ViewJDPage = () => {
             </div>
 
             {/* Right Section */}
-            <div className="flex flex-col items-end gap-3 min-w-[280px]">
+            <div className="flex flex-col items-end gap-3">
               {/* Action Buttons */}
               <div className="flex items-center gap-2 print:hidden">
                 {getStatusBadge(jd.status)}
@@ -601,37 +601,35 @@ export const ViewJDPage = () => {
                 )}
               </div>
 
-              {/* Info Cards */}
-              <div className="flex flex-col gap-2 w-full">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2.5">
-                  <div className="flex items-center gap-2 text-accent-50">
-                    <Users className="w-4 h-4 flex-shrink-0" />
-                    <span className="text-sm font-medium">Team:</span>
-                    <span className="text-sm">{getTeamName(jd.team_id)}</span>
-                  </div>
-                </div>
+              {/* Info in single line */}
+              <div className="flex items-center gap-4 text-accent-50 text-base">
+                <span className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  <span className="font-medium">Team:</span>
+                  {getTeamName(jd.team_id)}
+                </span>
                 
                 {jd.direct_supervisor && (
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2.5">
-                    <div className="flex items-center gap-2 text-accent-50">
-                      <User className="w-4 h-4 flex-shrink-0" />
-                      <span className="text-sm font-medium">Supervisor:</span>
-                      <span className="text-sm">{jd.direct_supervisor}</span>
-                    </div>
-                  </div>
+                  <>
+                    <span className="text-accent-200">|</span>
+                    <span className="flex items-center gap-2">
+                      <User className="w-5 h-5" />
+                      <span className="font-medium">Supervisor:</span>
+                      {jd.direct_supervisor}
+                    </span>
+                  </>
                 )}
                 
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2.5">
-                  <div className="flex items-center gap-2 text-accent-50">
-                    <Calendar className="w-4 h-4 flex-shrink-0" />
-                    <span className="text-sm font-medium">Published:</span>
-                    <span className="text-sm">{formatDate(jd.created_at)}</span>
-                  </div>
-                </div>
+                <span className="text-accent-200">|</span>
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  <span className="font-medium">Published:</span>
+                  {formatDate(jd.created_at)}
+                </span>
               </div>
 
               {/* Updated Info */}
-              <div className="text-accent-100 text-xs italic">
+              <div className="text-accent-100 text-sm">
                 Last updated {formatDate(jd.updated_at)}
               </div>
             </div>
