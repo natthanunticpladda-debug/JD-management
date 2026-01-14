@@ -155,7 +155,7 @@ export const jobDescriptionsAPI = {
       }
 
       // 1. Create main job description record
-      const insertData = {
+      const insertData: any = {
         position: data.position,
         job_band: data.job_band,
         job_grade: data.job_grade,
@@ -164,11 +164,15 @@ export const jobDescriptionsAPI = {
         team_id: data.team_id,
         direct_supervisor: data.direct_supervisor || '',
         job_purpose: data.job_purpose,
-        company_assets: data.company_assets || null,
         status: data.status || 'draft',
         created_by: data.created_by,
         updated_by: data.created_by,
       };
+
+      // Only include company_assets if it's provided (to avoid errors if column doesn't exist)
+      if (data.company_assets !== undefined) {
+        insertData.company_assets = data.company_assets;
+      }
 
       console.log('Inserting job description:', insertData);
 
@@ -272,7 +276,7 @@ export const jobDescriptionsAPI = {
       console.log('Updating job description with data:', data);
 
       // 1. Update main job description record
-      const updateData = {
+      const updateData: any = {
         position: data.position,
         job_band: data.job_band,
         job_grade: data.job_grade,
@@ -281,11 +285,15 @@ export const jobDescriptionsAPI = {
         team_id: data.team_id,
         direct_supervisor: data.direct_supervisor || '',
         job_purpose: data.job_purpose,
-        company_assets: data.company_assets || null,
         status: data.status || 'draft',
         updated_by: data.updated_by,
         updated_at: new Date().toISOString(),
       };
+
+      // Only include company_assets if it's provided (to avoid errors if column doesn't exist)
+      if (data.company_assets !== undefined) {
+        updateData.company_assets = data.company_assets;
+      }
 
       console.log('Updating job description:', updateData);
 
