@@ -216,24 +216,67 @@ export const ViewJDPage = () => {
         .print-section .grid > div {
           page-break-inside: avoid !important;
           break-inside: avoid !important;
+          orphans: 2 !important;
+          widows: 2 !important;
         }
         
-        /* Risk sections - Allow breaking */
-        .border-red-200, .border-blue-200 {
-          border-color: #d1d5db !important;
+        /* Risk sections - Preserve colors and allow breaking */
+        .border-red-200 {
+          border-color: #fecaca !important;
           page-break-inside: auto !important;
         }
         
-        .bg-red-50, .bg-blue-50 {
-          background: #f3f4f6 !important;
+        .border-blue-200 {
+          border-color: #bfdbfe !important;
+          page-break-inside: auto !important;
         }
         
-        .border-red-500, .border-blue-500 {
-          border-left-color: #6b7280 !important;
+        .bg-red-50 {
+          background: #fef2f2 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
         }
         
-        .text-red-600, .text-blue-600 {
-          color: #374151 !important;
+        .bg-blue-50 {
+          background: #eff6ff !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .border-red-500 {
+          border-left-color: #ef4444 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .border-blue-500 {
+          border-left-color: #3b82f6 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-red-600 {
+          color: #dc2626 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-blue-600 {
+          color: #2563eb !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-red-400 {
+          color: #f87171 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-blue-400 {
+          color: #60a5fa !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
         }
         
         /* Responsibilities categories - Allow breaking between categories */

@@ -138,6 +138,81 @@ export const EditJDPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [competencies.length, loading]);
 
+  // Add print styles for proper color rendering
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @media print {
+        body {
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+        
+        /* Risk section colors */
+        .border-red-200 {
+          border-color: #fecaca !important;
+        }
+        
+        .border-blue-200 {
+          border-color: #bfdbfe !important;
+        }
+        
+        .bg-red-50 {
+          background: #fef2f2 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .bg-blue-50 {
+          background: #eff6ff !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .border-red-500 {
+          border-left-color: #ef4444 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .border-blue-500 {
+          border-left-color: #3b82f6 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-red-600 {
+          color: #dc2626 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-blue-600 {
+          color: #2563eb !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-red-400 {
+          color: #f87171 !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        
+        .text-blue-400 {
+          color: #60a5fa !important;
+          print-color-adjust: exact !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   const loadJobDescription = async () => {
     if (!id) return;
     setLoading(true);
