@@ -610,7 +610,7 @@ export const ViewJDPage = () => {
               Basic Information
             </h3>
             <div className="bg-primary-50/50 rounded-lg p-4">
-              <div className="space-y-2">
+              <div className="flex flex-col md:flex-row md:items-center md:gap-6 space-y-2 md:space-y-0">
                 <div className="flex items-center">
                   <Users className="w-4 h-4 text-primary-400 mr-2" />
                   <span className="text-sm text-primary-500">Team:</span>
