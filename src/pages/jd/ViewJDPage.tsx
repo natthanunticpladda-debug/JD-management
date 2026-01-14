@@ -637,26 +637,6 @@ export const ViewJDPage = () => {
         </div>
 
         <div className="p-8 space-y-8 print-content">
-          {/* Company Assets */}
-          {jd.company_assets && jd.company_assets.length > 0 && (
-            <div className="print-section">
-              <h3 className="text-lg font-semibold text-purple-600 mb-3 flex items-center gap-2 border-b-2 border-purple-200 pb-2">
-                <Package className="w-5 h-5" />
-                Company Assets (ทรัพย์สินบริษัท)
-              </h3>
-              <div className="bg-primary-50/50 rounded-lg p-4">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                  {jd.company_assets.map((assetId: string, index: number) => (
-                    <div key={index} className="flex items-center p-2 bg-white rounded border border-purple-200">
-                      <Package className="w-4 h-4 text-purple-500 mr-2" />
-                      <span className="text-sm text-primary-700">{getAssetName(assetId)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Job Purpose */}
           <div className="print-section">
             <h3 className="text-lg font-semibold text-green-600 mb-3 flex items-center gap-2 border-b-2 border-green-200 pb-2">
@@ -818,6 +798,26 @@ export const ViewJDPage = () => {
                     </ul>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Company Assets */}
+          {jd.company_assets && jd.company_assets.length > 0 && (
+            <div className="print-section">
+              <h3 className="text-lg font-semibold text-purple-600 mb-3 flex items-center gap-2 border-b-2 border-purple-200 pb-2">
+                <Package className="w-5 h-5" />
+                Company Assets (ทรัพย์สินบริษัท)
+              </h3>
+              <div className="bg-primary-50/50 rounded-lg p-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {jd.company_assets.map((assetId: string, index: number) => (
+                    <div key={index} className="flex items-center p-2 bg-white rounded border border-purple-200">
+                      <Package className="w-4 h-4 text-purple-500 mr-2" />
+                      <span className="text-sm text-primary-700">{getAssetName(assetId)}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
