@@ -68,13 +68,15 @@ export const ViewJDPage = () => {
       @media print {
         @page {
           size: A4;
-          margin: 15mm 20mm 15mm 25mm;
+          margin: 20mm 15mm 15mm 15mm;
         }
         
         body {
           print-color-adjust: exact;
           -webkit-print-color-adjust: exact;
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          margin: 0 !important;
+          padding: 0 !important;
         }
         
         /* Hide navigation and non-essential elements */
@@ -87,39 +89,43 @@ export const ViewJDPage = () => {
           background: white !important;
           border: none !important;
           box-shadow: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
         
         /* Executive Header - Professional styling */
         .print-header {
           background: linear-gradient(135deg, #007AFF 0%, #0051D5 100%) !important;
           color: white !important;
-          padding: 25px 30px !important;
-          margin: -15mm -20mm 20px -25mm !important;
+          padding: 20px 25px !important;
+          margin: 0 0 15px 0 !important;
           border-radius: 0 !important;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+          box-shadow: none !important;
           page-break-after: avoid !important;
+          page-break-inside: avoid !important;
         }
         
         .print-header h1 {
-          font-size: 28pt !important;
+          font-size: 24pt !important;
           font-weight: 700 !important;
-          margin-bottom: 12px !important;
+          margin: 0 0 10px 0 !important;
           letter-spacing: -0.5px !important;
         }
         
         .print-header .text-accent-100 {
-          font-size: 11pt !important;
+          font-size: 10pt !important;
           opacity: 0.95 !important;
+          margin: 0 !important;
         }
         
         /* Content sections - Allow natural flow */
         .print-content {
-          padding: 0 !important;
+          padding: 0 15px !important;
           max-width: 100% !important;
         }
         
         .print-content > div {
-          margin-bottom: 20px !important;
+          margin-bottom: 15px !important;
         }
         
         /* Section headers - Keep with content */
