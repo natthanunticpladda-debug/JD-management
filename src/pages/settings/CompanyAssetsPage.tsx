@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useCompanyAssets } from '../../hooks/useCompanyAssets';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { Plus, Edit2, Trash2, Package } from 'lucide-react';
+import { Plus, Edit2, Trash2, Package, Laptop, Smartphone, CreditCard, Car, Ticket, Tablet, Phone, Fuel } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const CompanyAssetsPage = () => {
@@ -11,6 +11,44 @@ export const CompanyAssetsPage = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newName, setNewName] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+  const getAssetIcon = (assetName: string) => {
+    const iconMap: Record<string, React.ReactNode> = {
+      // คอมพิวเตอร์โน้ตบุ๊ค
+      'คอมพิวเตอร์โน้ตบุ๊ค': <Laptop className="w-4 h-4" />,
+      'Laptop': <Laptop className="w-4 h-4" />,
+      
+      // เครื่องโทรศัพท์
+      'เครื่องโทรศัพท์': <Smartphone className="w-4 h-4" />,
+      'Mobile Phone': <Smartphone className="w-4 h-4" />,
+      
+      // เมอร์โทรศัพท์
+      'เมอร์โทรศัพท์': <Phone className="w-4 h-4" />,
+      
+      // ค่าโทรศัพท์
+      'ค่าโทรศัพท์': <Phone className="w-4 h-4" />,
+      
+      // รถยนต์
+      'รถยนต์': <Car className="w-4 h-4" />,
+      
+      // Fleet Card
+      'Fleet Card': <CreditCard className="w-4 h-4" />,
+      
+      // บัตรรองรถ
+      'บัตรรองรถ': <Fuel className="w-4 h-4" />,
+      
+      // บัตร Easy Pass
+      'บัตร Easy Pass': <Ticket className="w-4 h-4" />,
+      
+      // เครื่อง Ipad
+      'เครื่อง Ipad': <Tablet className="w-4 h-4" />,
+      
+      // Access Card / บัตรประจำตัว
+      'Access Card': <CreditCard className="w-4 h-4" />,
+      'บัตรประจำตัว': <CreditCard className="w-4 h-4" />,
+    };
+    return iconMap[assetName] || <Package className="w-4 h-4" />;
+  };
 
   const handleAdd = () => {
     if (!newName.trim()) {
@@ -142,7 +180,7 @@ export const CompanyAssetsPage = () => {
                   <tr key={asset.id} className="hover:bg-primary-50/30 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
-                        <Package className="w-4 h-4 text-primary-400" />
+                        <span className="text-primary-400">{getAssetIcon(asset.name)}</span>
                         <span className="text-body font-medium text-primary-600">
                           {asset.name}
                         </span>
