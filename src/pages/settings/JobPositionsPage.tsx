@@ -10,7 +10,6 @@ export const JobPositionsPage = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newName, setNewName] = useState('');
-  const [newDescription, setNewDescription] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -21,9 +20,8 @@ export const JobPositionsPage = () => {
     }
 
     try {
-      await addPosition(newName.trim(), newDescription.trim() || undefined);
+      await addPosition(newName.trim());
       setNewName('');
-      setNewDescription('');
       setIsAdding(false);
     } catch (error) {
       // Error handled in hook
@@ -37,10 +35,9 @@ export const JobPositionsPage = () => {
     }
 
     try {
-      await updatePosition(id, newName.trim(), newDescription.trim() || undefined);
+      await updatePosition(id, newName.trim());
       setEditingId(null);
       setNewName('');
-      setNewDescription('');
     } catch (error) {
       // Error handled in hook
     }
@@ -55,10 +52,9 @@ export const JobPositionsPage = () => {
     }
   };
 
-  const startEdit = (id: string, name: string, description?: string) => {
+  const startEdit = (id: string, name: string) => {
     setEditingId(id);
     setNewName(name);
-    setNewDescription(description || '');
     setIsAdding(false);
   };
 
@@ -66,7 +62,6 @@ export const JobPositionsPage = () => {
     setEditingId(null);
     setIsAdding(false);
     setNewName('');
-    setNewDescription('');
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,10 +74,10 @@ export const JobPositionsPage = () => {
         const text = e.target?.result as string;
         const lines = text.split('\n').filter(line => line.trim());
         
-        // Parse CSV: name,description
+        // Parse CSV: just position names, one per line
         const positionsToImport = lines.slice(1).map(line => {
-          const [name, description] = line.split(',').map(s => s.trim());
-          return { name, description };
+          const name = line.trim();
+          return { name };
         }).filter(pos => pos.name);
 
         if (positionsToImport.length === 0) {
@@ -93,7 +88,7 @@ export const JobPositionsPage = () => {
         await bulkImport(positionsToImport);
       } catch (error) {
         console.error('Error parsing file:', error);
-        toast.error('ไม่สามารถอ่านไฟล์ได้ กรุณาใช้รูปแบบ CSV: name,description');
+        toast.error('ไม่สามารถอ่านไฟล์ได้ กรุณาใช้รูปแบบ CSV: ชื่อตำแหน่งงาน (หนึ่งตำแหน่งต่อบรรทัด)');
       }
     };
 
@@ -106,7 +101,7 @@ export const JobPositionsPage = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = 'name,description\nSenior Manager,Senior management position\nProject Manager,Project management position';
+    const csv = 'name\nSenior Manager\nProject Manager\nTechnical Lead';
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -154,7 +149,6 @@ export const JobPositionsPage = () => {
               setIsAdding(true);
               setEditingId(null);
               setNewName('');
-              setNewDescription('');
             }}
             icon={<Plus className="w-5 h-5" />}
           >
@@ -186,18 +180,6 @@ export const JobPositionsPage = () => {
               placeholder="e.g., Senior Manager, Developer"
               required
             />
-            <div>
-              <label className="block text-sm font-medium text-primary-600 mb-1">
-                Description (Optional)
-              </label>
-              <textarea
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)}
-                placeholder="Brief description of the position"
-                rows={3}
-                className="w-full px-3 py-2 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent"
-              />
-            </div>
             <div className="flex gap-2">
               <Button
                 onClick={() => (isAdding ? handleAdd() : handleUpdate(editingId!))}
@@ -221,9 +203,6 @@ export const JobPositionsPage = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">
                   Position Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">
-                  Description
-                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-primary-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -232,7 +211,7 @@ export const JobPositionsPage = () => {
             <tbody className="divide-y divide-primary-100">
               {positions.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-6 py-12 text-center">
+                  <td colSpan={2} className="px-6 py-12 text-center">
                     <Briefcase className="w-12 h-12 text-primary-300 mx-auto mb-3" />
                     <p className="text-body text-primary-400">No job positions yet</p>
                     <p className="text-body-sm text-primary-300 mt-1">
@@ -252,16 +231,11 @@ export const JobPositionsPage = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-body text-primary-500">
-                        {position.description || '-'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => startEdit(position.id, position.name, position.description)}
+                          onClick={() => startEdit(position.id, position.name)}
                           icon={<Edit2 className="w-4 h-4" />}
                         >
                           Edit

@@ -93,7 +93,7 @@ export const useJobPositions = () => {
     }
   };
 
-  const bulkImport = async (positions: Array<{ name: string; description?: string }>) => {
+  const bulkImport = async (positions: Array<{ name: string }>) => {
     try {
       const { data, error } = await supabase
         .from('job_positions')
