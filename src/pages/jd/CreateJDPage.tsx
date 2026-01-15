@@ -95,8 +95,13 @@ export const CreateJDPage = () => {
   const totalPercentage = Object.values(responsibilityPercentages).reduce((sum, val) => sum + val, 0);
 
   const updatePercentage = (category: keyof typeof responsibilityPercentages, value: number) => {
-    const numValue = Math.max(0, Math.min(100, value || 0));
-    setResponsibilityPercentages(prev => ({ ...prev, [category]: numValue }));
+    const numValue = Math.max(0, value || 0);
+    const currentValue = responsibilityPercentages[category];
+    const otherTotal = totalPercentage - currentValue;
+    // Limit so total doesn't exceed 100
+    const maxAllowed = 100 - otherTotal;
+    const finalValue = Math.min(numValue, maxAllowed);
+    setResponsibilityPercentages(prev => ({ ...prev, [category]: finalValue }));
   };
 
   // Risks
@@ -529,21 +534,6 @@ export const CreateJDPage = () => {
             <ClipboardList className="w-5 h-5" />
             Responsibilities (หน้าที่ความรับผิดชอบ)
           </h3>
-          
-          {/* Percentage Summary */}
-          <div className={`mb-6 p-4 rounded-lg ${totalPercentage === 100 ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'}`}>
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-primary-700">สัดส่วนรวม:</span>
-              <span className={`text-lg font-bold ${totalPercentage === 100 ? 'text-green-600' : 'text-yellow-600'}`}>
-                {totalPercentage}% / 100%
-              </span>
-            </div>
-            {totalPercentage !== 100 && (
-              <p className="text-sm text-yellow-600 mt-1">
-                {totalPercentage < 100 ? `ยังขาดอีก ${100 - totalPercentage}%` : `เกินมา ${totalPercentage - 100}%`}
-              </p>
-            )}
-          </div>
 
           {/* Strategic */}
           <div className="space-y-6 pt-6">
@@ -875,6 +865,23 @@ export const CreateJDPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Percentage Summary - Must be 100% */}
+          <div className={`mt-6 p-4 rounded-lg ${totalPercentage === 100 ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-medium text-primary-700">สัดส่วนรวม:</span>
+                {totalPercentage !== 100 && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {totalPercentage < 100 ? `ยังขาดอีก ${100 - totalPercentage}%` : `เกินมา ${totalPercentage - 100}% (กรุณาลดให้เหลือ 100%)`}
+                  </p>
+                )}
+              </div>
+              <span className={`text-lg font-bold ${totalPercentage === 100 ? 'text-green-600' : 'text-red-600'}`}>
+                {totalPercentage}% / 100%
+              </span>
+            </div>
+          </div>
         </div>
         {/* Core Competencies */}
         <div className="border-t border-primary-200 pt-6">
@@ -1090,11 +1097,18 @@ export const CreateJDPage = () => {
             <Button
               onClick={handleSubmit}
               loading={submitting}
+              disabled={totalPercentage !== 100}
               icon={<Save className="w-4 h-4" />}
+              title={totalPercentage !== 100 ? 'สัดส่วน Responsibilities ต้องรวมกันเท่ากับ 100%' : ''}
             >
               Create Job Description
             </Button>
           </div>
+          {totalPercentage !== 100 && (
+            <p className="text-sm text-red-500 mt-2">
+              ⚠️ กรุณากรอกสัดส่วน Responsibilities ให้ครบ 100% ก่อนสร้าง JD
+            </p>
+          )}
         </div>
       </div>
     </div>
