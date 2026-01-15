@@ -26,7 +26,7 @@ export const useJobPositions = () => {
       setPositions(data || []);
     } catch (error: any) {
       console.error('Error fetching positions:', error);
-      toast.error('Failed to load job positions');
+      toast.error('ไม่สามารถโหลดข้อมูลตำแหน่งงานได้');
     } finally {
       setLoading(false);
     }
@@ -43,11 +43,11 @@ export const useJobPositions = () => {
       if (error) throw error;
       
       setPositions(prev => [...prev, data].sort((a, b) => a.name.localeCompare(b.name)));
-      toast.success('Job position added successfully');
+      toast.success('เพิ่มตำแหน่งงานสำเร็จ');
       return data;
     } catch (error: any) {
       console.error('Error adding position:', error);
-      toast.error(error.message || 'Failed to add job position');
+      toast.error(error.message || 'ไม่สามารถเพิ่มตำแหน่งงานได้');
       throw error;
     }
   };
@@ -66,11 +66,11 @@ export const useJobPositions = () => {
       setPositions(prev => 
         prev.map(pos => pos.id === id ? data : pos).sort((a, b) => a.name.localeCompare(b.name))
       );
-      toast.success('Job position updated successfully');
+      toast.success('แก้ไขตำแหน่งงานสำเร็จ');
       return data;
     } catch (error: any) {
       console.error('Error updating position:', error);
-      toast.error(error.message || 'Failed to update job position');
+      toast.error(error.message || 'ไม่สามารถแก้ไขตำแหน่งงานได้');
       throw error;
     }
   };
@@ -85,10 +85,10 @@ export const useJobPositions = () => {
       if (error) throw error;
       
       setPositions(prev => prev.filter(pos => pos.id !== id));
-      toast.success('Job position deleted successfully');
+      toast.success('ลบตำแหน่งงานสำเร็จ');
     } catch (error: any) {
       console.error('Error deleting position:', error);
-      toast.error(error.message || 'Failed to delete job position');
+      toast.error(error.message || 'ไม่สามารถลบตำแหน่งงานได้');
       throw error;
     }
   };
@@ -103,11 +103,11 @@ export const useJobPositions = () => {
       if (error) throw error;
       
       await fetchPositions();
-      toast.success(`Successfully imported ${data.length} job positions`);
+      toast.success(`นำเข้าตำแหน่งงานสำเร็จ ${data.length} รายการ`);
       return data;
     } catch (error: any) {
       console.error('Error importing positions:', error);
-      toast.error(error.message || 'Failed to import job positions');
+      toast.error(error.message || 'ไม่สามารถนำเข้าตำแหน่งงานได้');
       throw error;
     }
   };

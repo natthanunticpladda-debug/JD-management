@@ -16,7 +16,7 @@ export const JobPositionsPage = () => {
 
   const handleAdd = async () => {
     if (!newName.trim()) {
-      toast.error('Position name is required');
+      toast.error('กรุณากรอกชื่อตำแหน่งงาน');
       return;
     }
 
@@ -32,7 +32,7 @@ export const JobPositionsPage = () => {
 
   const handleUpdate = async (id: string) => {
     if (!newName.trim()) {
-      toast.error('Position name is required');
+      toast.error('กรุณากรอกชื่อตำแหน่งงาน');
       return;
     }
 
@@ -86,14 +86,14 @@ export const JobPositionsPage = () => {
         }).filter(pos => pos.name);
 
         if (positionsToImport.length === 0) {
-          toast.error('No valid positions found in file');
+          toast.error('ไม่พบข้อมูลตำแหน่งงานที่ถูกต้องในไฟล์');
           return;
         }
 
         await bulkImport(positionsToImport);
       } catch (error) {
         console.error('Error parsing file:', error);
-        toast.error('Failed to parse file. Please use CSV format: name,description');
+        toast.error('ไม่สามารถอ่านไฟล์ได้ กรุณาใช้รูปแบบ CSV: name,description');
       }
     };
 
