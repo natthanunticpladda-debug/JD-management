@@ -39,6 +39,23 @@ import {
 import { CompetencyRadarChart } from '../../components/CompetencyRadarChart';
 import type { JobDescriptionAPI } from '../../types';
 
+// Default assets - same as useCompanyAssets.ts (stored in localStorage)
+const defaultAssets = [
+  { id: '1', name: 'Laptop' },
+  { id: '2', name: 'Mobile Phone' },
+  { id: '3', name: 'Access Card' },
+  // Thai asset names
+  { id: 'คอมพิวเตอร์โน้ตบุ๊ค', name: 'คอมพิวเตอร์โน้ตบุ๊ค' },
+  { id: 'เครื่องโทรศัพท์', name: 'เครื่องโทรศัพท์' },
+  { id: 'เบอร์โทรศัพท์', name: 'เบอร์โทรศัพท์' },
+  { id: 'ค่าโทรศัพท์', name: 'ค่าโทรศัพท์' },
+  { id: 'รถยนต์', name: 'รถยนต์' },
+  { id: 'Fleet Card', name: 'Fleet Card' },
+  { id: 'บัตรรองรถ', name: 'บัตรรองรถ' },
+  { id: 'บัตร Easy Pass', name: 'บัตร Easy Pass' },
+  { id: 'เครื่อง Ipad', name: 'เครื่อง Ipad' },
+];
+
 export const PublicViewJDPage = () => {
   const { id } = useParams<{ id: string }>();
   const [jd, setJd] = useState<JobDescriptionAPI | null>(null);
@@ -47,7 +64,7 @@ export const PublicViewJDPage = () => {
   const [departments, setDepartments] = useState<any[]>([]);
   const [teams, setTeams] = useState<any[]>([]);
   const [competencies, setCompetencies] = useState<any[]>([]);
-  const [assets, setAssets] = useState<any[]>([]);
+  const [assets] = useState<any[]>(defaultAssets);
 
   useEffect(() => {
     if (id) {
@@ -77,8 +94,7 @@ export const PublicViewJDPage = () => {
         { data: locationsData },
         { data: departmentsData },
         { data: teamsData },
-        { data: allCompetencies },
-        { data: assetsData }
+        { data: allCompetencies }
       ] = await Promise.all([
         supabase.from('jd_responsibilities').select('*').eq('jd_id', id).order('order_index'),
         supabase.from('jd_risks').select('*').eq('jd_id', id).order('order_index'),
@@ -87,7 +103,6 @@ export const PublicViewJDPage = () => {
         supabase.from('departments').select('*'),
         supabase.from('teams').select('*'),
         supabase.from('competencies').select('*').order('name'),
-        supabase.from('company_assets').select('*').order('name'),
       ]);
 
       if (jdData) {
@@ -104,7 +119,7 @@ export const PublicViewJDPage = () => {
       if (departmentsData) setDepartments(departmentsData);
       if (teamsData) setTeams(teamsData);
       if (allCompetencies) setCompetencies(allCompetencies);
-      if (assetsData) setAssets(assetsData);
+      // Assets are loaded from defaultAssets (localStorage pattern) - no need to load from Supabase
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -135,10 +150,17 @@ export const PublicViewJDPage = () => {
   };
 
   const getAssetName = (assetId: string) => {
-    const asset = assets.find(a => a.id === assetId);
-    if (asset) {
-      return asset.name;
+    // First check by ID
+    const assetById = assets.find(a => a.id === assetId);
+    if (assetById) {
+      return assetById.name;
     }
+    // Then check by name (in case the stored value is the name itself)
+    const assetByName = assets.find(a => a.name === assetId);
+    if (assetByName) {
+      return assetByName.name;
+    }
+    // Return the assetId as-is (it might be a custom asset name)
     return assetId;
   };
 
