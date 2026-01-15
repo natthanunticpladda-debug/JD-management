@@ -41,6 +41,11 @@ import {
   Home,
   Package,
   Clock,
+  Laptop,
+  Smartphone,
+  CreditCard,
+  Car,
+  Ticket,
 } from 'lucide-react';
 import type { JobDescriptionAPI } from '../../types';
 
@@ -463,6 +468,25 @@ export const ViewJDPage = () => {
     return assetId;
   };
 
+  const getAssetIcon = (assetName: string) => {
+    const iconMap: Record<string, React.ReactNode> = {
+      'Laptop': <Laptop className="w-4 h-4" />,
+      'คอมพิวเตอร์โน้ตบุ๊ค': <Laptop className="w-4 h-4" />,
+      'Mobile Phone': <Smartphone className="w-4 h-4" />,
+      'เครื่องโทรศัพท์': <Smartphone className="w-4 h-4" />,
+      'Access Card': <CreditCard className="w-4 h-4" />,
+      'บัตรประจำตัว': <CreditCard className="w-4 h-4" />,
+      'สำเภาโทรศัพท์': <Smartphone className="w-4 h-4" />,
+      'รถยนต์': <Car className="w-4 h-4" />,
+      'Fleet Card': <Ticket className="w-4 h-4" />,
+      'บัตรรองรถ': <Ticket className="w-4 h-4" />,
+      'บัตร Easy Pass': <Ticket className="w-4 h-4" />,
+      'เครื่อง Ipad': <Laptop className="w-4 h-4" />,
+      'ค่าโทรศัพท์': <Smartphone className="w-4 h-4" />,
+    };
+    return iconMap[assetName] || <Package className="w-4 h-4" />;
+  };
+
   const getCategoryIcon = (category: string) => {
     const iconMap: Record<string, React.ReactNode> = {
       'strategic': <Lightbulb className="w-4 h-4" />,
@@ -812,12 +836,15 @@ export const ViewJDPage = () => {
               </h3>
               <div className="bg-primary-50/50 rounded-lg p-4">
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                  {jd.company_assets.map((assetId: string, index: number) => (
-                    <div key={index} className="flex items-center p-2 bg-white rounded border border-purple-200">
-                      <Package className="w-4 h-4 text-purple-500 mr-2" />
-                      <span className="text-sm text-primary-700">{getAssetName(assetId)}</span>
-                    </div>
-                  ))}
+                  {jd.company_assets.map((assetId: string, index: number) => {
+                    const assetName = getAssetName(assetId);
+                    return (
+                      <div key={index} className="flex items-center p-2 bg-white rounded border border-purple-200">
+                        <span className="text-purple-500 mr-2">{getAssetIcon(assetName)}</span>
+                        <span className="text-sm text-primary-700">{assetName}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
