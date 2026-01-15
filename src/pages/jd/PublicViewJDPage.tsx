@@ -60,9 +60,29 @@ export const PublicViewJDPage = () => {
     
     setLoading(true);
     try {
-      // Load all data in parallel
-      const [jdData, locationsData, departmentsData, teamsData, competenciesData, assetsData] = await Promise.all([
-        supabase.from('job_descriptions').select('*').eq('id', id).single(),
+      // Load main JD data
+      const { data: jdData, error: jdError } = await supabase
+        .from('job_descriptions')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (jdError) throw jdError;
+
+      // Load related data in parallel
+      const [
+        { data: responsibilities },
+        { data: risks },
+        { data: competenciesData },
+        { data: locationsData },
+        { data: departmentsData },
+        { data: teamsData },
+        { data: allCompetencies },
+        { data: assetsData }
+      ] = await Promise.all([
+        supabase.from('jd_responsibilities').select('*').eq('jd_id', id).order('order_index'),
+        supabase.from('jd_risks').select('*').eq('jd_id', id).order('order_index'),
+        supabase.from('jd_competencies').select('*, competency:competencies(id, name)').eq('jd_id', id),
         supabase.from('locations').select('*'),
         supabase.from('departments').select('*'),
         supabase.from('teams').select('*'),
@@ -70,14 +90,21 @@ export const PublicViewJDPage = () => {
         supabase.from('company_assets').select('*').order('name'),
       ]);
 
-      if (jdData.data) {
-        setJd(jdData.data);
+      if (jdData) {
+        // Attach related data to JD
+        setJd({
+          ...jdData,
+          responsibilities: responsibilities || [],
+          risks: risks || [],
+          competencies: competenciesData || [],
+        });
       }
-      if (locationsData.data) setLocations(locationsData.data);
-      if (departmentsData.data) setDepartments(departmentsData.data);
-      if (teamsData.data) setTeams(teamsData.data);
-      if (competenciesData.data) setCompetencies(competenciesData.data);
-      if (assetsData.data) setAssets(assetsData.data);
+      
+      if (locationsData) setLocations(locationsData);
+      if (departmentsData) setDepartments(departmentsData);
+      if (teamsData) setTeams(teamsData);
+      if (allCompetencies) setCompetencies(allCompetencies);
+      if (assetsData) setAssets(assetsData);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
