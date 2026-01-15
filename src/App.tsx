@@ -18,6 +18,7 @@ import { BrowseJDPage } from './pages/jd/BrowseJDPage';
 import { CreateJDPage } from './pages/jd/CreateJDPage';
 import { EditJDPage } from './pages/jd/EditJDPage';
 import { ViewJDPage } from './pages/jd/ViewJDPage';
+import { PublicViewJDPage } from './pages/jd/PublicViewJDPage';
 
 // Settings pages
 import { SettingsPage } from './pages/settings/SettingsPage';
@@ -44,6 +45,9 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          
+          {/* Public JD view route - no authentication required */}
+          <Route path="/jd/share/:id" element={<PublicViewJDPage />} />
 
           {/* Protected routes */}
           <Route

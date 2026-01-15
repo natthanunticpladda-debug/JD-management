@@ -482,7 +482,7 @@ export const ViewJDPage = () => {
   };
 
   const handleCopyLink = async () => {
-    const shareUrl = `${window.location.origin}/jd/${id}`;
+    const shareUrl = `${window.location.origin}/jd/share/${id}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopySuccess(true);
@@ -990,7 +990,7 @@ export const ViewJDPage = () => {
                 <input
                   type="text"
                   readOnly
-                  value={`${window.location.origin}/jd/${id}`}
+                  value={`${window.location.origin}/jd/share/${id}`}
                   className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500"
                   onClick={(e) => e.currentTarget.select()}
                 />
