@@ -1,96 +1,105 @@
-import { useState, useMemo, useEffect } from 'react';
-import type { JobBandEntity } from '../types';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import toast from 'react-hot-toast';
 
-// Hardcoded job bands data (rarely changes)
-const DEFAULT_JOB_BANDS: JobBandEntity[] = [
-  { id: 'jb-1', name: 'JB 1', order_index: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'jb-2', name: 'JB 2', order_index: 2, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'jb-3', name: 'JB 3', order_index: 3, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'jb-4', name: 'JB 4', order_index: 4, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'jb-5', name: 'JB 5', order_index: 5, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-];
-
-const STORAGE_KEY = 'jd_job_bands';
-
-// Load from localStorage or use defaults
-const loadJobBands = (): JobBandEntity[] => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (error) {
-    console.error('Failed to load job bands from localStorage:', error);
-  }
-  return DEFAULT_JOB_BANDS;
-};
-
-// Save to localStorage
-const saveJobBands = (bands: JobBandEntity[]) => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(bands));
-  } catch (error) {
-    console.error('Failed to save job bands to localStorage:', error);
-  }
-};
+export interface JobBandEntity {
+  id: string;
+  name: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
 
 export const useJobBands = () => {
-  const [jobBands, setJobBands] = useState<JobBandEntity[]>(loadJobBands);
-  const [loading] = useState(false);
-  const [error] = useState<string | null>(null);
-
-  // Save to localStorage whenever jobBands changes
-  useEffect(() => {
-    saveJobBands(jobBands);
-  }, [jobBands]);
+  const [jobBands, setJobBands] = useState<JobBandEntity[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchJobBands = async () => {
-    // Reload from localStorage
-    setJobBands(loadJobBands());
-    return Promise.resolve();
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('job_bands')
+        .select('*')
+        .order('order_index');
+
+      if (error) throw error;
+      setJobBands(data || []);
+    } catch (error: any) {
+      console.error('Error fetching job bands:', error);
+      toast.error('ไม่สามารถโหลดข้อมูล Job Bands ได้');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const createJobBand = async (name: string, orderIndex: number) => {
-    const newBand: JobBandEntity = {
-      id: `jb-${Date.now()}`,
-      name,
-      order_index: orderIndex,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-    setJobBands(prev => {
-      const updated = [...prev, newBand].sort((a, b) => a.order_index - b.order_index);
-      saveJobBands(updated);
-      return updated;
-    });
-    return newBand;
+    try {
+      const { data, error } = await supabase
+        .from('job_bands')
+        .insert([{ name, order_index: orderIndex }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setJobBands(prev => [...prev, data].sort((a, b) => a.order_index - b.order_index));
+      toast.success('เพิ่ม Job Band สำเร็จ');
+      return data;
+    } catch (error: any) {
+      console.error('Error creating job band:', error);
+      toast.error(error.message || 'ไม่สามารถเพิ่ม Job Band ได้');
+      throw error;
+    }
   };
 
   const updateJobBand = async (id: string, name: string, orderIndex: number) => {
-    const updatedBand = jobBands.find(b => b.id === id);
-    if (!updatedBand) throw new Error('Job band not found');
-    
-    const updated = { ...updatedBand, name, order_index: orderIndex, updated_at: new Date().toISOString() };
-    setJobBands(prev => {
-      const result = prev.map(band => band.id === id ? updated : band).sort((a, b) => a.order_index - b.order_index);
-      saveJobBands(result);
-      return result;
-    });
-    return updated;
+    try {
+      const { data, error } = await supabase
+        .from('job_bands')
+        .update({ name, order_index: orderIndex, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setJobBands(prev => 
+        prev.map(band => band.id === id ? data : band).sort((a, b) => a.order_index - b.order_index)
+      );
+      toast.success('แก้ไข Job Band สำเร็จ');
+      return data;
+    } catch (error: any) {
+      console.error('Error updating job band:', error);
+      toast.error(error.message || 'ไม่สามารถแก้ไข Job Band ได้');
+      throw error;
+    }
   };
 
   const deleteJobBand = async (id: string) => {
-    setJobBands(prev => {
-      const result = prev.filter(band => band.id !== id);
-      saveJobBands(result);
-      return result;
-    });
+    try {
+      const { error } = await supabase
+        .from('job_bands')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setJobBands(prev => prev.filter(band => band.id !== id));
+      toast.success('ลบ Job Band สำเร็จ');
+    } catch (error: any) {
+      console.error('Error deleting job band:', error);
+      toast.error(error.message || 'ไม่สามารถลบ Job Band ได้');
+      throw error;
+    }
   };
 
+  useEffect(() => {
+    fetchJobBands();
+  }, []);
+
   return {
-    jobBands: useMemo(() => jobBands, [jobBands]),
+    jobBands,
     loading,
-    error,
     fetchJobBands,
     createJobBand,
     updateJobBand,
