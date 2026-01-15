@@ -39,7 +39,16 @@ export const useCompanyAssets = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setAssets(JSON.parse(stored));
+        const loadedAssets = JSON.parse(stored);
+        // Remove duplicates based on name (case-insensitive)
+        const uniqueAssets = loadedAssets.reduce((acc: CompanyAsset[], current: CompanyAsset) => {
+          const exists = acc.find(item => item.name.toLowerCase() === current.name.toLowerCase());
+          if (!exists) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+        setAssets(uniqueAssets);
       } catch (error) {
         console.error('Error loading company assets:', error);
         setAssets(defaultAssets);
@@ -58,6 +67,12 @@ export const useCompanyAssets = () => {
   }, [assets, loading]);
 
   const addAsset = (name: string, description?: string) => {
+    // Check if asset with same name already exists
+    const exists = assets.some(asset => asset.name.toLowerCase() === name.toLowerCase());
+    if (exists) {
+      throw new Error('ทรัพย์สินนี้มีอยู่แล้ว');
+    }
+    
     const newAsset: CompanyAsset = {
       id: Date.now().toString(),
       name,
@@ -68,6 +83,14 @@ export const useCompanyAssets = () => {
   };
 
   const updateAsset = (id: string, name: string, description?: string) => {
+    // Check if another asset with same name exists (excluding current asset)
+    const exists = assets.some(asset => 
+      asset.id !== id && asset.name.toLowerCase() === name.toLowerCase()
+    );
+    if (exists) {
+      throw new Error('ทรัพย์สินนี้มีอยู่แล้ว');
+    }
+    
     setAssets(prev =>
       prev.map(asset =>
         asset.id === id ? { ...asset, name, description } : asset
