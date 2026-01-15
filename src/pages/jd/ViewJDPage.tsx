@@ -758,6 +758,25 @@ export const ViewJDPage = () => {
                 <ClipboardList className="w-5 h-5" />
                 Responsibilities (หน้าที่ความรับผิดชอบ)
               </h3>
+              
+              {/* Percentage Summary Bar */}
+              {jd.responsibility_percentages && Object.values(jd.responsibility_percentages).some(v => v > 0) && (
+                <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-gray-700">สัดส่วนรวม:</span>
+                    <span className="text-lg font-bold text-green-600">
+                      {Object.values(jd.responsibility_percentages).reduce((sum: number, val) => sum + (val as number || 0), 0)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="h-3 rounded-full bg-green-500"
+                      style={{ width: `${Math.min(Object.values(jd.responsibility_percentages).reduce((sum: number, val) => sum + (val as number || 0), 0), 100)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+              
               <div className="space-y-4">
                 {Object.entries(
                   jd.responsibilities.reduce((acc, resp) => {
@@ -785,11 +804,20 @@ export const ViewJDPage = () => {
                     'other': 'text-violet-600'
                   };
                   
+                  // Get percentage for this category
+                  const percentage = jd.responsibility_percentages ? 
+                    (jd.responsibility_percentages as Record<string, number>)[category] : undefined;
+                  
                   return (
                     <div key={category} className="bg-primary-50/50 rounded-lg p-4">
                       <h4 className={`font-medium mb-2 flex items-center gap-2 ${categoryColors[category] || 'text-primary-600'}`}>
                         {getCategoryIcon(category)}
                         {categoryLabels[category] || category.replace('_', ' ')}
+                        {percentage !== undefined && percentage > 0 && (
+                          <span className="ml-2 px-2 py-0.5 bg-white rounded-full text-sm font-semibold border">
+                            {percentage}%
+                          </span>
+                        )}
                       </h4>
                       <ul className="space-y-1">
                         {items.map((item, index) => (
