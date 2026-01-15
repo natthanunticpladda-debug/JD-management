@@ -134,20 +134,6 @@ export const PublicViewJDPage = () => {
     return teams.find(team => team.id === teamId)?.name || 'Unknown';
   };
 
-  const getAssetName = (assetId: string) => {
-    // First check by ID
-    const assetById = assets.find(a => a.id === assetId);
-    if (assetById) {
-      return assetById.name;
-    }
-    // Then check by name (in case the stored value is the name itself)
-    const assetByName = assets.find(a => a.name === assetId);
-    if (assetByName) {
-      return assetByName.name;
-    }
-    // Return the assetId as-is (it might be a custom asset name)
-    return assetId;
-  };
 
   const getAssetIcon = (assetName: string) => {
     const iconMap: Record<string, React.ReactNode> = {
@@ -451,15 +437,19 @@ export const PublicViewJDPage = () => {
                 </h3>
                 <div className="bg-primary-50/50 rounded-lg p-4">
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                    {jd.company_assets.map((assetId: string, index: number) => {
-                      const assetName = getAssetName(assetId);
-                      return (
+                    {jd.company_assets
+                      .map((assetId: string) => {
+                        // Find asset by ID or name
+                        const asset = assets.find(a => a.id === assetId || a.name === assetId);
+                        return asset ? asset.name : null;
+                      })
+                      .filter((name): name is string => name !== null)
+                      .map((assetName: string, index: number) => (
                         <div key={index} className="flex items-center p-2 bg-white rounded border border-purple-200">
                           <span className="text-purple-500 mr-2">{getAssetIcon(assetName)}</span>
                           <span className="text-sm text-primary-700">{assetName}</span>
                         </div>
-                      );
-                    })}
+                      ))}
                   </div>
                 </div>
               </div>
