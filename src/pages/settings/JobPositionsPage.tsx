@@ -135,14 +135,14 @@ export const JobPositionsPage = () => {
             onClick={downloadTemplate}
             icon={<Download className="w-5 h-5" />}
           >
-            Template
+            ดาวน์โหลดตัวอย่าง
           </Button>
           <Button
             variant="ghost"
             onClick={() => fileInputRef.current?.click()}
             icon={<Upload className="w-5 h-5" />}
           >
-            Import CSV
+            นำเข้าจาก CSV
           </Button>
           <Button
             onClick={() => {
@@ -152,7 +152,7 @@ export const JobPositionsPage = () => {
             }}
             icon={<Plus className="w-5 h-5" />}
           >
-            Add Position
+            เพิ่มตำแหน่งงาน
           </Button>
         </div>
       </div>
@@ -168,26 +168,26 @@ export const JobPositionsPage = () => {
 
       {/* Add/Edit Form */}
       {(isAdding || editingId) && (
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 p-6">
+        <div key={editingId || 'new'} className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-100 p-6">
           <h3 className="text-body-lg font-semibold text-primary-600 mb-4">
-            {isAdding ? 'Add New Position' : 'Edit Position'}
+            {isAdding ? 'เพิ่มตำแหน่งงานใหม่' : 'แก้ไขตำแหน่งงาน'}
           </h3>
           <div className="space-y-4">
             <Input
-              label="Position Name"
+              label="ชื่อตำแหน่งงาน"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="e.g., Senior Manager, Developer"
+              placeholder="เช่น Senior Manager, Developer"
               required
             />
             <div className="flex gap-2">
               <Button
                 onClick={() => (isAdding ? handleAdd() : handleUpdate(editingId!))}
               >
-                {isAdding ? 'Add Position' : 'Update Position'}
+                {isAdding ? 'เพิ่มตำแหน่งงาน' : 'บันทึกการแก้ไข'}
               </Button>
               <Button variant="ghost" onClick={cancelEdit}>
-                Cancel
+                ยกเลิก
               </Button>
             </div>
           </div>
@@ -201,10 +201,10 @@ export const JobPositionsPage = () => {
             <thead className="bg-primary-50/50 border-b border-primary-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-primary-500 uppercase tracking-wider">
-                  Position Name
+                  ชื่อตำแหน่งงาน
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-primary-500 uppercase tracking-wider">
-                  Actions
+                  การจัดการ
                 </th>
               </tr>
             </thead>
@@ -213,9 +213,9 @@ export const JobPositionsPage = () => {
                 <tr>
                   <td colSpan={2} className="px-6 py-12 text-center">
                     <Briefcase className="w-12 h-12 text-primary-300 mx-auto mb-3" />
-                    <p className="text-body text-primary-400">No job positions yet</p>
+                    <p className="text-body text-primary-400">ยังไม่มีตำแหน่งงาน</p>
                     <p className="text-body-sm text-primary-300 mt-1">
-                      Click "Add Position" to create your first position
+                      คลิก "เพิ่มตำแหน่งงาน" เพื่อสร้างตำแหน่งงานแรก
                     </p>
                   </td>
                 </tr>
@@ -238,7 +238,7 @@ export const JobPositionsPage = () => {
                           onClick={() => startEdit(position.id, position.name)}
                           icon={<Edit2 className="w-4 h-4" />}
                         >
-                          Edit
+                          แก้ไข
                         </Button>
                         <Button
                           variant="ghost"
@@ -247,7 +247,7 @@ export const JobPositionsPage = () => {
                           icon={<Trash2 className="w-4 h-4" />}
                           className="text-red-600 hover:text-red-700"
                         >
-                          Delete
+                          ลบ
                         </Button>
                       </div>
                     </td>
@@ -267,21 +267,21 @@ export const JobPositionsPage = () => {
               <div className="p-2 bg-red-100 rounded-lg">
                 <Trash2 className="w-5 h-5 text-red-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">Delete Position</h3>
+              <h3 className="text-lg font-semibold text-gray-900">ลบตำแหน่งงาน</h3>
             </div>
             <p className="text-gray-600 mb-4">
-              Are you sure you want to delete this position? This action cannot be undone.
+              คุณแน่ใจหรือไม่ว่าต้องการลบตำแหน่งงานนี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้
             </p>
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setDeleteConfirm(null)}>
-                Cancel
+                ยกเลิก
               </Button>
               <Button
                 variant="secondary"
                 onClick={() => handleDelete(deleteConfirm)}
                 className="bg-red-600 hover:bg-red-700 text-white"
               >
-                Delete
+                ลบ
               </Button>
             </div>
           </div>
