@@ -93,6 +93,19 @@ export const useJobPositions = () => {
 
   const bulkImport = async (newPositions: Array<{ name: string }>) => {
     try {
+      // Remove duplicates within the import file itself (case-insensitive)
+      const seenNames = new Set<string>();
+      const deduplicatedPositions = newPositions.filter(p => {
+        const lowerName = p.name.toLowerCase();
+        if (seenNames.has(lowerName)) {
+          return false;
+        }
+        seenNames.add(lowerName);
+        return true;
+      });
+      
+      const duplicatesInFile = newPositions.length - deduplicatedPositions.length;
+      
       // Fetch fresh data from database to get accurate existing names
       const { data: currentPositions, error: fetchError } = await supabase
         .from('job_positions')
@@ -103,15 +116,20 @@ export const useJobPositions = () => {
       // Get existing position names to filter duplicates
       const existingNames = (currentPositions || []).map(p => p.name.toLowerCase());
       
-      // Filter out duplicates
-      const uniquePositions = newPositions.filter(
+      // Filter out duplicates that already exist in DB
+      const uniquePositions = deduplicatedPositions.filter(
         p => !existingNames.includes(p.name.toLowerCase())
       );
       
-      const skippedCount = newPositions.length - uniquePositions.length;
+      const skippedFromDB = deduplicatedPositions.length - uniquePositions.length;
+      const totalSkipped = duplicatesInFile + skippedFromDB;
       
       if (uniquePositions.length === 0) {
-        toast.error(`ตำแหน่งงานทั้งหมด ${newPositions.length} รายการมีอยู่แล้วในระบบ`);
+        if (duplicatesInFile > 0) {
+          toast.error(`ไม่สามารถนำเข้าได้ - มีชื่อซ้ำในไฟล์ ${duplicatesInFile} รายการ และซ้ำกับในระบบ ${skippedFromDB} รายการ`);
+        } else {
+          toast.error(`ตำแหน่งงานทั้งหมด ${newPositions.length} รายการมีอยู่แล้วในระบบ`);
+        }
         return [];
       }
       
@@ -124,8 +142,8 @@ export const useJobPositions = () => {
       
       await fetchPositions();
       
-      if (skippedCount > 0) {
-        toast.success(`นำเข้าสำเร็จ ${data.length} รายการ (ข้าม ${skippedCount} รายการที่ซ้ำ)`);
+      if (totalSkipped > 0) {
+        toast.success(`นำเข้าสำเร็จ ${data.length} รายการ (ข้าม ${totalSkipped} รายการที่ซ้ำ)`);
       } else {
         toast.success(`นำเข้าตำแหน่งงานสำเร็จ ${data.length} รายการ`);
       }
