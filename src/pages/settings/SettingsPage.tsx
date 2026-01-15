@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Building, Users, MapPin, Award, Layers, TrendingUp, Package } from 'lucide-react';
+import { Building, Users, MapPin, Award, Layers, TrendingUp, Package, Briefcase } from 'lucide-react';
 
 export const SettingsPage = () => {
   const settings = [
@@ -9,6 +9,7 @@ export const SettingsPage = () => {
     { name: 'Competencies', icon: Award, href: '/settings/competencies' },
     { name: 'Job Bands', icon: Layers, href: '/settings/job-bands' },
     { name: 'Job Grades', icon: TrendingUp, href: '/settings/job-grades' },
+    { name: 'Job Positions', icon: Briefcase, href: '/settings/job-positions' },
     { name: 'Company Assets', icon: Package, href: '/settings/company-assets' },
   ];
 
