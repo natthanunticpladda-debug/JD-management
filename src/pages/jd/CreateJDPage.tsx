@@ -517,7 +517,7 @@ export const CreateJDPage = () => {
           <div className="space-y-6 pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <label className="text-base font-semibold text-primary-600">Strategic (เชิงกลยุทธ์)</label>
+                <label className="text-base font-semibold text-indigo-600">Strategic (เชิงกลยุทธ์)</label>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -556,7 +556,7 @@ export const CreateJDPage = () => {
           <div className="space-y-6 border-t border-primary-200 pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <label className="text-base font-semibold text-primary-600">
+                <label className="text-base font-semibold text-cyan-600">
                   Team Management & Development (การบริหารทีม และการพัฒนาบุคลากร)
                 </label>
                 <Button
@@ -598,7 +598,7 @@ export const CreateJDPage = () => {
           <div className="space-y-6 border-t border-primary-200 pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <label className="text-base font-semibold text-primary-600">General Tasks (งานทั่วไป)</label>
+                <label className="text-base font-semibold text-amber-600">General Tasks (งานทั่วไป)</label>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -638,7 +638,7 @@ export const CreateJDPage = () => {
           <div className="space-y-6 border-t border-primary-200 pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <label className="text-base font-semibold text-primary-600">
+                <label className="text-base font-semibold text-rose-600">
                   Culture Building (การสร้างและส่งเสริมวัฒนธรรมองค์กร)
                 </label>
                 <Button
@@ -680,7 +680,7 @@ export const CreateJDPage = () => {
           <div className="space-y-6 border-t border-primary-200 pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <label className="text-base font-semibold text-primary-600">
+                <label className="text-base font-semibold text-emerald-600">
                   Improve Efficiency & Add Value (การเพิ่มประสิทธิภาพและสร้างคุณค่าใหม่ๆ)
                 </label>
                 <Button
@@ -722,7 +722,7 @@ export const CreateJDPage = () => {
           <div className="space-y-6 border-t border-primary-200 pt-6">
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <label className="text-base font-semibold text-primary-600">
+                <label className="text-base font-semibold text-violet-600">
                   Other Assigned Works (หน้าที่ความรับผิดชอบด้านอื่นๆ)
                 </label>
                 <Button
