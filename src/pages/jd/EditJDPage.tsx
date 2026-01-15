@@ -1332,9 +1332,8 @@ export const EditJDPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                     <div>
                       <label className="block text-body-sm font-semibold text-primary-600 mb-2">
-                        Competency Name
+                        {comp.name}
                       </label>
-                      <Input value={comp.name} disabled className="bg-primary-50/50 text-primary-600" />
                     </div>
                     <div>
                       <Slider
