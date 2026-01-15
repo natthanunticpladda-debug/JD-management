@@ -349,12 +349,9 @@ export const CreateJDPage = () => {
         })),
       };
 
-      // Include company_assets if there are any selected (save asset names instead of IDs)
+      // Include company_assets if there are any selected (save asset IDs for proper linking)
       if (selectedAssets.length > 0) {
-        jdData.company_assets = selectedAssets.map(assetId => {
-          const asset = assets.find(a => a.id === assetId);
-          return asset ? asset.name : assetId;
-        });
+        jdData.company_assets = selectedAssets;
       }
 
       const createdJD = await createJobDescription(jdData);
