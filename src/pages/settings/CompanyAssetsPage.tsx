@@ -14,39 +14,45 @@ export const CompanyAssetsPage = () => {
 
   const getAssetIcon = (assetName: string) => {
     const iconMap: Record<string, React.ReactNode> = {
-      // คอมพิวเตอร์โน้ตบุ๊ค
+      // คอมพิวเตอร์โน้ตบุ๊ค - Laptop icon
       'คอมพิวเตอร์โน้ตบุ๊ค': <Laptop className="w-4 h-4" />,
       'Laptop': <Laptop className="w-4 h-4" />,
       
-      // เครื่องโทรศัพท์
+      // เครื่องโทรศัพท์ - Smartphone icon
       'เครื่องโทรศัพท์': <Smartphone className="w-4 h-4" />,
       'Mobile Phone': <Smartphone className="w-4 h-4" />,
       
-      // เมอร์โทรศัพท์
+      // เมอร์โทรศัพท์ - Phone icon
       'เมอร์โทรศัพท์': <Phone className="w-4 h-4" />,
       
-      // ค่าโทรศัพท์
+      // ค่าโทรศัพท์ - Phone icon
       'ค่าโทรศัพท์': <Phone className="w-4 h-4" />,
       
-      // รถยนต์
+      // รถยนต์ - Car icon
       'รถยนต์': <Car className="w-4 h-4" />,
       
-      // Fleet Card
+      // Fleet Card - CreditCard icon
       'Fleet Card': <CreditCard className="w-4 h-4" />,
       
-      // บัตรรองรถ
+      // บัตรรองรถ - Fuel icon
       'บัตรรองรถ': <Fuel className="w-4 h-4" />,
       
-      // บัตร Easy Pass
+      // บัตร Easy Pass - Ticket icon
       'บัตร Easy Pass': <Ticket className="w-4 h-4" />,
       
-      // เครื่อง Ipad
+      // เครื่อง Ipad - Tablet icon
       'เครื่อง Ipad': <Tablet className="w-4 h-4" />,
       
-      // Access Card / บัตรประจำตัว
+      // Access Card - CreditCard icon
       'Access Card': <CreditCard className="w-4 h-4" />,
       'บัตรประจำตัว': <CreditCard className="w-4 h-4" />,
     };
+    
+    // Log for debugging
+    if (!iconMap[assetName]) {
+      console.log('No icon found for asset:', assetName);
+    }
+    
     return iconMap[assetName] || <Package className="w-4 h-4" />;
   };
 
