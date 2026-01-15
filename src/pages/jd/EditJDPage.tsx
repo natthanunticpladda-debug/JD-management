@@ -967,6 +967,7 @@ export const EditJDPage = () => {
             value={directSupervisor}
             onChange={setDirectSupervisor}
             placeholder="พิมพ์เพื่อค้นหาตำแหน่งหัวหน้างาน..."
+          excludeValue={position}
           />
         </div>
 

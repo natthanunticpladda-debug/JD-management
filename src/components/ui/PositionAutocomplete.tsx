@@ -7,6 +7,7 @@ interface PositionAutocompleteProps {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  excludeValue?: string; // Value to exclude from suggestions
 }
 
 export const PositionAutocomplete = ({
@@ -15,25 +16,34 @@ export const PositionAutocomplete = ({
   label = 'Position (ตำแหน่งงาน)',
   placeholder = 'พิมพ์เพื่อค้นหาตำแหน่งงาน...',
   required = false,
+  excludeValue,
 }: PositionAutocompleteProps) => {
   const { positions } = useJobPositions();
   const [isOpen, setIsOpen] = useState(false);
   const [filteredPositions, setFilteredPositions] = useState<typeof positions>([]);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Filter positions based on input
+  // Filter positions based on input and exclude value
   useEffect(() => {
     if (value.trim()) {
-      const filtered = positions.filter(pos =>
+      let filtered = positions.filter(pos =>
         pos.name.toLowerCase().includes(value.toLowerCase())
       );
+      
+      // Exclude the specified value (e.g., the selected Position)
+      if (excludeValue) {
+        filtered = filtered.filter(pos => 
+          pos.name.toLowerCase() !== excludeValue.toLowerCase()
+        );
+      }
+      
       setFilteredPositions(filtered);
       setIsOpen(filtered.length > 0);
     } else {
       setFilteredPositions([]);
       setIsOpen(false);
     }
-  }, [value, positions]);
+  }, [value, positions, excludeValue]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
