@@ -422,11 +422,11 @@ export const CreateJDPage = () => {
             onChange={setPosition}
             required
           />
-          <Input
+          <PositionAutocomplete
             label="Direct Supervisor (หัวหน้างานโดยตรง)"
             value={directSupervisor}
-            onChange={(e) => setDirectSupervisor(e.target.value)}
-            placeholder="e.g., Department Manager, Assistant Managing Director"
+            onChange={setDirectSupervisor}
+            placeholder="พิมพ์เพื่อค้นหาตำแหน่งหัวหน้างาน..."
           />
         </div>
 
