@@ -46,6 +46,9 @@ import {
   CreditCard,
   Car,
   Ticket,
+  Tablet,
+  Phone,
+  Fuel,
 } from 'lucide-react';
 import type { JobDescriptionAPI } from '../../types';
 
@@ -471,22 +474,38 @@ export const ViewJDPage = () => {
   const getAssetIcon = (assetName: string) => {
     console.log('Asset name:', assetName); // Debug log
     const iconMap: Record<string, React.ReactNode> = {
-      // English names
-      'Laptop': <Laptop className="w-4 h-4" />,
-      'Mobile Phone': <Smartphone className="w-4 h-4" />,
-      'Access Card': <CreditCard className="w-4 h-4" />,
-      'Fleet Card': <Ticket className="w-4 h-4" />,
-      // Thai names
+      // คอมพิวเตอร์โน้ตบุ๊ค
       'คอมพิวเตอร์โน้ตบุ๊ค': <Laptop className="w-4 h-4" />,
+      'Laptop': <Laptop className="w-4 h-4" />,
+      
+      // เครื่องโทรศัพท์
       'เครื่องโทรศัพท์': <Smartphone className="w-4 h-4" />,
-      'เมอร์โทรศัพท์': <Smartphone className="w-4 h-4" />,
-      'บัตรประจำตัว': <CreditCard className="w-4 h-4" />,
-      'สำเภาโทรศัพท์': <Smartphone className="w-4 h-4" />,
+      'Mobile Phone': <Smartphone className="w-4 h-4" />,
+      
+      // เมอร์โทรศัพท์
+      'เมอร์โทรศัพท์': <Phone className="w-4 h-4" />,
+      
+      // ค่าโทรศัพท์
+      'ค่าโทรศัพท์': <Phone className="w-4 h-4" />,
+      
+      // รถยนต์
       'รถยนต์': <Car className="w-4 h-4" />,
-      'บัตรรองรถ': <Ticket className="w-4 h-4" />,
+      
+      // Fleet Card
+      'Fleet Card': <CreditCard className="w-4 h-4" />,
+      
+      // บัตรรองรถ
+      'บัตรรองรถ': <Fuel className="w-4 h-4" />,
+      
+      // บัตร Easy Pass
       'บัตร Easy Pass': <Ticket className="w-4 h-4" />,
-      'เครื่อง Ipad': <Laptop className="w-4 h-4" />,
-      'ค่าโทรศัพท์': <Smartphone className="w-4 h-4" />,
+      
+      // เครื่อง Ipad
+      'เครื่อง Ipad': <Tablet className="w-4 h-4" />,
+      
+      // Access Card / บัตรประจำตัว
+      'Access Card': <CreditCard className="w-4 h-4" />,
+      'บัตรประจำตัว': <CreditCard className="w-4 h-4" />,
     };
     return iconMap[assetName] || <Package className="w-4 h-4" />;
   };
