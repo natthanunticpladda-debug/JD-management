@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+﻿import { useState, useRef } from 'react';
 import { useJobPositions } from '../../hooks/useJobPositions';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
