@@ -21,6 +21,7 @@ import {
   MapPin,
   Building2,
   User,
+  GitCompare,
 } from 'lucide-react';
 import type { JobDescriptionFilters, JDStatus, JobBand } from '../../types';
 
@@ -423,6 +424,20 @@ export const BrowseJDPage = () => {
                             View
                           </Button>
                         </Link>
+
+                        {/* Admin: Compare button for JD with version > 1 */}
+                        {user?.role === 'admin' && jd.version > 1 && (
+                          <Link to={`/jd/${jd.id}/compare`}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              icon={<GitCompare className="w-4 h-4" />}
+                              className="text-blue-600 hover:text-blue-700"
+                            >
+                              Compare
+                            </Button>
+                          </Link>
+                        )}
 
                         {canEditJD(jd) && (
                           <>

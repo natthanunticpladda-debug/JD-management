@@ -20,6 +20,7 @@ import { CreateJDPage } from './pages/jd/CreateJDPage';
 import { EditJDPage } from './pages/jd/EditJDPage';
 import { ViewJDPage } from './pages/jd/ViewJDPage';
 import { PublicViewJDPage } from './pages/jd/PublicViewJDPage';
+import { CompareJDPage } from './pages/jd/CompareJDPage';
 
 // Settings pages
 import { SettingsPage } from './pages/settings/SettingsPage';
@@ -71,6 +72,7 @@ function App() {
               <Route path="create" element={<CreateJDPage />} />
               <Route path=":id" element={<ViewJDPage />} />
               <Route path=":id/edit" element={<EditJDPage />} />
+              <Route path=":id/compare" element={<CompareJDPage />} />
             </Route>
 
             {/* Settings routes */}
