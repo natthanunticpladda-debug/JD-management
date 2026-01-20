@@ -86,17 +86,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
   }, []);
 
-  const fetchUserProfile = async (userId: string) => {
-    console.log('[Auth Debug] 7. fetchUserProfile started for userId:', userId);
+  const fetchUserProfile = async (userId: string, retryCount = 0) => {
+    console.log(`[Auth Debug] 7. fetchUserProfile started for userId: ${userId} (attempt ${retryCount + 1})`);
     const profileStartTime = Date.now();
 
     try {
       // Try to get user profile with timeout
       console.log('[Auth Debug] 8. Querying users table...');
 
-      // Create a timeout promise
+      // Create a timeout promise (shorter timeout, 4 seconds)
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Query timeout after 8 seconds')), 8000);
+        setTimeout(() => reject(new Error('Query timeout')), 4000);
       });
 
       // Race between query and timeout
@@ -167,10 +167,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
-      // Sign out on any unexpected error
-      await supabase.auth.signOut();
-      setUser(null);
+      console.error(`[Auth Debug] Error fetching user profile (attempt ${retryCount + 1}):`, error);
+
+      // Retry up to 3 times on timeout
+      if (retryCount < 2) {
+        console.log(`[Auth Debug] Retrying... (attempt ${retryCount + 2})`);
+        // Wait a bit before retry
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return fetchUserProfile(userId, retryCount + 1);
+      }
+
+      // After 3 attempts, give up but DON'T sign out - just stop loading
+      console.error('[Auth Debug] All retry attempts failed, stopping loading');
+      // Don't sign out - keep the session, just couldn't load profile
+      // await supabase.auth.signOut();
+      // setUser(null);
     } finally {
       setLoading(false);
     }
