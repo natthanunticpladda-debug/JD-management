@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 
+type UserJobGrade = '1.1' | '1.2' | '2.1' | '2.2' | '3.1' | '3.2' | '5';
+
 interface User {
   id: string;
   email: string;
   full_name: string;
   role: 'admin' | 'manager' | 'viewer';
+  job_grade: UserJobGrade | null;
   team_id: string | null;
 }
 
@@ -55,7 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Try to get user profile
       const { data, error } = await supabase
         .from('users')
-        .select('id, email, full_name, role, team_id')
+        .select('id, email, full_name, role, job_grade, team_id')
         .eq('id', userId)
         .maybeSingle();
 
@@ -71,6 +74,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           email: data.email,
           full_name: data.full_name,
           role: data.role as 'admin' | 'manager' | 'viewer',
+          job_grade: data.job_grade as UserJobGrade | null,
           team_id: data.team_id,
         });
       } else {
@@ -83,6 +87,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             email: authUser.user.email || '',
             full_name: authUser.user.user_metadata?.full_name || authUser.user.email?.split('@')[0] || 'User',
             role: 'viewer' as const,
+            job_grade: null,
             team_id: null,
           };
 

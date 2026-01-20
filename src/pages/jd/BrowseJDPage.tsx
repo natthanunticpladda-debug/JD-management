@@ -52,27 +52,22 @@ export const BrowseJDPage = () => {
     if (user.role === 'manager') {
       return jd.created_by === user.id || (jd.team_id && jd.team_id === user.team_id);
     }
-    // Viewer can edit only their own JDs
-    if (user.role === 'viewer') {
-      return jd.created_by === user.id;
-    }
+    // Viewer cannot edit
     return false;
   };
 
   // Helper function to check if user can publish a specific JD
   const canPublishJD = (jd: any): boolean => {
     if (!user) return false;
-    // Only Admin and Manager can publish
-    if (user.role === 'admin') return true;
+    // Only Manager can publish (not Admin, not Viewer)
     if (user.role === 'manager') {
       return jd.created_by === user.id || (jd.team_id && jd.team_id === user.team_id);
     }
-    // Viewer cannot publish
     return false;
   };
 
-  // Everyone can create JD now (including Viewer)
-  const canCreate = !!user;
+  // Only Admin and Manager can create JD
+  const canCreate = user?.role === 'admin' || user?.role === 'manager';
 
   // Get available job grades based on selected job band
   const getAvailableGrades = () => {

@@ -53,11 +53,14 @@ export type ActivityEntityType =
   | 'team'
   | 'competency';
 
+export type UserJobGrade = '1.1' | '1.2' | '2.1' | '2.2' | '3.1' | '3.2' | '5';
+
 export interface User {
   id: string;
   email: string;
   full_name: string;
   role: UserRole;
+  job_grade: UserJobGrade | null;
   team_id: string | null;
   location_id: string;
   department_id: string;
