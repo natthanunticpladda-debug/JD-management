@@ -72,12 +72,12 @@ export const BrowseJDPage = () => {
       return jd.created_by === user.id || (jd.team_id && jd.team_id === user.team_id);
     }
 
-    // Viewer with JG 2.1+ can edit JDs with lower JG in same team (created by Manager)
+    // Viewer with JG 2.2+ can edit JDs with lower JG in same team (created by Manager)
     if (user.role === 'viewer' && user.job_grade) {
       const userGradeValue = parseFloat(user.job_grade);
 
-      // Must be JG 2.1 or higher
-      if (userGradeValue >= 2.1) {
+      // Must be JG 2.2 or higher
+      if (userGradeValue >= 2.2) {
         // Must be in same team
         const sameTeam = jd.team_id && jd.team_id === user.team_id;
 
