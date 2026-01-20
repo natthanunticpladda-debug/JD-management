@@ -43,16 +43,55 @@ export const BrowseJDPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
+  // Helper function to compare job grades
+  const compareJobGrades = (userGrade: string | null, jdGrade: string): boolean => {
+    if (!userGrade) return false;
+
+    // Extract numeric values from job grade strings
+    // Example: "JG 2.1 Supervisor" -> 2.1
+    const extractGradeValue = (grade: string): number => {
+      const match = grade.match(/(\d+\.\d+)/);
+      return match ? parseFloat(match[1]) : 0;
+    };
+
+    const userGradeValue = parseFloat(userGrade); // User JG is stored as "2.1", "3.1", etc.
+    const jdGradeValue = extractGradeValue(jdGrade); // JD job_grade is "JG 2.1 Supervisor"
+
+    return userGradeValue > jdGradeValue;
+  };
+
   // Helper function to check if user can edit a specific JD
   const canEditJD = (jd: any): boolean => {
     if (!user) return false;
+
     // Admin can edit everything
     if (user.role === 'admin') return true;
+
     // Manager can edit their own + team members' JDs
     if (user.role === 'manager') {
       return jd.created_by === user.id || (jd.team_id && jd.team_id === user.team_id);
     }
-    // Viewer cannot edit
+
+    // Viewer with JG 2.1+ can edit JDs with lower JG in same team (created by Manager)
+    if (user.role === 'viewer' && user.job_grade) {
+      const userGradeValue = parseFloat(user.job_grade);
+
+      // Must be JG 2.1 or higher
+      if (userGradeValue >= 2.1) {
+        // Must be in same team
+        const sameTeam = jd.team_id && jd.team_id === user.team_id;
+
+        // JD must be created by a Manager (check via created_by_user role)
+        const createdByManager = (jd as any).created_by_user?.role === 'manager';
+
+        // User's JG must be higher than JD's JG
+        const higherGrade = compareJobGrades(user.job_grade, jd.job_grade);
+
+        return sameTeam && createdByManager && higherGrade;
+      }
+    }
+
+    // Default: Viewer cannot edit
     return false;
   };
 

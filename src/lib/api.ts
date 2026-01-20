@@ -28,8 +28,8 @@ export const jobDescriptionsAPI = {
           location:locations(id, name),
           department:departments(id, name),
           team:teams(id, name),
-          created_by_user:users!job_descriptions_created_by_fkey(id, full_name, email),
-          updated_by_user:users!job_descriptions_updated_by_fkey(id, full_name, email)
+          created_by_user:users!job_descriptions_created_by_fkey(id, full_name, email, role),
+          updated_by_user:users!job_descriptions_updated_by_fkey(id, full_name, email, role)
         `);
 
       // Apply filters
