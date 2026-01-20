@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 import { LogIn } from 'lucide-react';
 
@@ -28,6 +29,25 @@ export const LoginPage = () => {
       // Navigation will happen automatically via useEffect when user is set
     } catch (error: any) {
       toast.error(error.message || 'Failed to sign in');
+      setLoading(false);
+    }
+  };
+
+  const handleMicrosoftSignIn = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: {
+          scopes: 'email',
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Microsoft sign in error:', error);
+      toast.error(error.message || 'Failed to sign in with Microsoft');
       setLoading(false);
     }
   };
@@ -107,6 +127,32 @@ export const LoginPage = () => {
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          {/* Microsoft Sign In Button */}
+          <button
+            type="button"
+            onClick={handleMicrosoftSignIn}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0H10.9091V10.9091H0V0Z" fill="#F25022"/>
+              <path d="M12.0909 0H23V10.9091H12.0909V0Z" fill="#7FBA00"/>
+              <path d="M0 12.0909H10.9091V23H0V12.0909Z" fill="#00A4EF"/>
+              <path d="M12.0909 12.0909H23V23H12.0909V12.0909Z" fill="#FFB900"/>
+            </svg>
+            Sign in with Microsoft
+          </button>
 
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
