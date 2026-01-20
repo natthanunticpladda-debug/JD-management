@@ -21,11 +21,14 @@ import {
 import type { User } from '../../types';
 import toast from 'react-hot-toast';
 
+type UserJobGrade = '1.1' | '1.2' | '2.1' | '2.2' | '3.1' | '3.2' | '5';
+
 type UserFormData = {
   email: string;
   password: string;
   fullName: string;
   role: 'admin' | 'manager' | 'viewer';
+  jobGrade: UserJobGrade | '';
   locationId: string;
   departmentId: string;
   teamId: string;
@@ -53,6 +56,7 @@ export const UsersPage = () => {
     password: '',
     fullName: '',
     role: 'viewer',
+    jobGrade: '',
     locationId: '',
     departmentId: '',
     teamId: '',
@@ -84,6 +88,7 @@ export const UsersPage = () => {
       password: '',
       fullName: '',
       role: 'viewer',
+      jobGrade: '',
       locationId: '',
       departmentId: '',
       teamId: '',
@@ -108,6 +113,7 @@ export const UsersPage = () => {
         password: formData.password,
         fullName: formData.fullName,
         role: formData.role,
+        jobGrade: formData.jobGrade || null,
         locationId: formData.locationId,
         departmentId: formData.departmentId,
         teamId: formData.teamId,
@@ -128,6 +134,7 @@ export const UsersPage = () => {
       password: '',
       fullName: user.full_name,
       role: user.role,
+      jobGrade: user.job_grade || '',
       locationId: user.location_id,
       departmentId: user.department_id,
       teamId: user.team_id || '',
@@ -153,6 +160,7 @@ export const UsersPage = () => {
       await updateUser(selectedUser.id, {
         fullName: formData.fullName,
         role: formData.role,
+        jobGrade: formData.jobGrade || null,
         locationId: formData.locationId,
         departmentId: formData.departmentId,
         teamId: formData.teamId,
@@ -416,6 +424,20 @@ export const UsersPage = () => {
                   <option value="admin">Admin</option>
                 </Select>
                 <Select
+                  label="Job Grade"
+                  value={formData.jobGrade}
+                  onChange={(e) => setFormData({ ...formData, jobGrade: e.target.value as any })}
+                >
+                  <option value="">Select Job Grade</option>
+                  <option value="1.1">1.1</option>
+                  <option value="1.2">1.2</option>
+                  <option value="2.1">2.1</option>
+                  <option value="2.2">2.2</option>
+                  <option value="3.1">3.1</option>
+                  <option value="3.2">3.2</option>
+                  <option value="5">5</option>
+                </Select>
+                <Select
                   label="Location"
                   value={formData.locationId}
                   onChange={(e) => setFormData({ ...formData, locationId: e.target.value })}
@@ -502,6 +524,20 @@ export const UsersPage = () => {
                   <option value="viewer">Viewer</option>
                   <option value="manager">Manager</option>
                   <option value="admin">Admin</option>
+                </Select>
+                <Select
+                  label="Job Grade"
+                  value={formData.jobGrade}
+                  onChange={(e) => setFormData({ ...formData, jobGrade: e.target.value as any })}
+                >
+                  <option value="">Select Job Grade</option>
+                  <option value="1.1">1.1</option>
+                  <option value="1.2">1.2</option>
+                  <option value="2.1">2.1</option>
+                  <option value="2.2">2.2</option>
+                  <option value="3.1">3.1</option>
+                  <option value="3.2">3.2</option>
+                  <option value="5">5</option>
                 </Select>
                 <Select
                   label="Location"

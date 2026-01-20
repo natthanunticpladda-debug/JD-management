@@ -39,6 +39,7 @@ export const useUsers = () => {
     password: string;
     fullName: string;
     role: 'admin' | 'manager' | 'viewer';
+    jobGrade: string | null;
     locationId: string;
     departmentId: string;
     teamId: string;
@@ -69,6 +70,7 @@ export const useUsers = () => {
           email: userData.email,
           full_name: userData.fullName,
           role: userData.role,
+          job_grade: userData.jobGrade,
           location_id: userData.locationId,
           department_id: userData.departmentId,
           team_id: userData.teamId,
@@ -89,6 +91,7 @@ export const useUsers = () => {
     updates: {
       fullName?: string;
       role?: 'admin' | 'manager' | 'viewer';
+      jobGrade?: string | null;
       locationId?: string;
       departmentId?: string;
       teamId?: string;
@@ -99,6 +102,7 @@ export const useUsers = () => {
       const updateData: any = {};
       if (updates.fullName !== undefined) updateData.full_name = updates.fullName;
       if (updates.role !== undefined) updateData.role = updates.role;
+      if (updates.jobGrade !== undefined) updateData.job_grade = updates.jobGrade;
       if (updates.locationId !== undefined) updateData.location_id = updates.locationId;
       if (updates.departmentId !== undefined) updateData.department_id = updates.departmentId;
       if (updates.teamId !== undefined) updateData.team_id = updates.teamId;
