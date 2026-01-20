@@ -28,9 +28,9 @@ export const useUsers = () => {
           is_active,
           created_at,
           updated_at,
-          location:locations(id, name),
-          department:departments(id, name),
-          team:teams(id, name)
+          location:location_id(id, name),
+          department:department_id(id, name),
+          team:team_id(id, name)
         `)
         .order('full_name');
 
@@ -51,31 +51,33 @@ export const useUsers = () => {
               is_active,
               created_at,
               updated_at,
-              location:locations(id, name),
-              department:departments(id, name),
-              team:teams(id, name)
+              location:location_id(id, name),
+              department:department_id(id, name),
+              team:team_id(id, name)
             `)
             .order('full_name');
 
           if (fallbackError) throw fallbackError;
           // Add job_grade: null to all users
+          // Supabase returns arrays for foreign keys, need to extract first item
           setUsers((fallbackData || []).map(user => ({
             ...user,
             job_grade: null,
-            location: Array.isArray(user.location) && user.location.length > 0 ? user.location[0] : undefined,
-            department: Array.isArray(user.department) && user.department.length > 0 ? user.department[0] : undefined,
-            team: Array.isArray(user.team) && user.team.length > 0 ? user.team[0] : undefined,
+            location: Array.isArray(user.location) && user.location.length > 0 ? user.location[0] : user.location,
+            department: Array.isArray(user.department) && user.department.length > 0 ? user.department[0] : user.department,
+            team: Array.isArray(user.team) && user.team.length > 0 ? user.team[0] : user.team,
           })) as User[]);
           toast.error('Please run SQL migration to add job_grade column');
           return;
         }
         throw error;
       }
+      // Supabase returns arrays for foreign keys, need to extract first item
       setUsers((data || []).map(user => ({
         ...user,
-        location: Array.isArray(user.location) && user.location.length > 0 ? user.location[0] : undefined,
-        department: Array.isArray(user.department) && user.department.length > 0 ? user.department[0] : undefined,
-        team: Array.isArray(user.team) && user.team.length > 0 ? user.team[0] : undefined,
+        location: Array.isArray(user.location) && user.location.length > 0 ? user.location[0] : user.location,
+        department: Array.isArray(user.department) && user.department.length > 0 ? user.department[0] : user.department,
+        team: Array.isArray(user.team) && user.team.length > 0 ? user.team[0] : user.team,
       })) as User[]);
     } catch (error: any) {
       console.error('Error loading users:', error);
