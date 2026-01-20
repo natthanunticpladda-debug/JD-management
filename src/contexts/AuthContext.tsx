@@ -27,15 +27,31 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
+    // Timeout fallback - if loading takes more than 5 seconds, stop loading
+    // This prevents infinite loading if Supabase connection fails
+    const timeoutId = setTimeout(() => {
+      if (!initialized) {
+        console.warn('Auth loading timeout - stopping loading state');
+        setLoading(false);
+        setInitialized(true);
+      }
+    }, 5000);
+
     // Check active sessions and sets the user
     supabase.auth.getSession().then(({ data: { session } }) => {
+      setInitialized(true);
       if (session?.user) {
         fetchUserProfile(session.user.id);
       } else {
         setLoading(false);
       }
+    }).catch((error) => {
+      console.error('Error getting session:', error);
+      setLoading(false);
+      setInitialized(true);
     });
 
     // Listen for changes on auth state (sign in, sign out, etc.)
@@ -50,7 +66,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
