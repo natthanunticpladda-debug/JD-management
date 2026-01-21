@@ -56,18 +56,18 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-50 via-yellow-100 to-primary-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-primary-100 to-accent-50 px-4">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-2xl shadow-apple-lg p-8">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl mb-4 shadow-apple">
               <LogIn className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-primary-600">
               Job Description Management
             </h1>
-            <p className="mt-2 text-gray-600">เข้าสู่ระบบด้วย Microsoft Account</p>
+            <p className="mt-2 text-primary-400">เข้าสู่ระบบด้วย Microsoft Account</p>
           </div>
 
           {/* Microsoft Sign In Button */}
@@ -75,7 +75,7 @@ export const LoginPage = () => {
             type="button"
             onClick={handleMicrosoftSignIn}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 bg-[#2F2F2F] text-white py-4 px-6 rounded-lg font-medium hover:bg-[#1F1F1F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02]"
+            className="w-full flex items-center justify-center gap-3 bg-primary-600 text-white py-4 px-6 rounded-xl font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] shadow-apple"
           >
             <svg className="w-6 h-6" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 0H10.9091V10.9091H0V0Z" fill="#F25022"/>
@@ -86,12 +86,12 @@ export const LoginPage = () => {
             {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบด้วย Microsoft'}
           </button>
 
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-6 text-center text-sm text-primary-400">
             กรุณาใช้ Microsoft Account ขององค์กรในการเข้าสู่ระบบ
           </p>
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-primary-400">
           Job Description Management System
         </p>
       </div>
