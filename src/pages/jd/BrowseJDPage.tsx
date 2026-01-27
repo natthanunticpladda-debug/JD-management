@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useJobDescriptions } from '../../hooks/useJobDescriptions';
 import { useDepartments } from '../../hooks/useDepartments';
@@ -22,6 +22,9 @@ import {
   Building2,
   User,
   GitCompare,
+  Check,
+  ChevronDown,
+  X,
 } from 'lucide-react';
 import type { JobDescriptionFilters, JDStatus, JobBand } from '../../types';
 
@@ -43,6 +46,20 @@ export const BrowseJDPage = () => {
   const [filters, setFilters] = useState<JobDescriptionFilters>({});
   const [showFilters, setShowFilters] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showGradeDropdown, setShowGradeDropdown] = useState(false);
+  const gradeDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (gradeDropdownRef.current && !gradeDropdownRef.current.contains(event.target as Node)) {
+        setShowGradeDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Helper function to compare job grades
   const compareJobGrades = (userGrade: string | null, jdGrade: string): boolean => {
@@ -121,26 +138,47 @@ export const BrowseJDPage = () => {
   useEffect(() => {
     fetchJobDescriptions(filters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.search, filters.status, filters.departmentId, filters.teamId, filters.jobBand, filters.jobGrade]);
+  }, [filters.search, filters.status, filters.departmentId, filters.teamId, filters.jobBand, filters.jobGrades]);
 
   const handleSearch = (search: string) => {
     setFilters(prev => ({ ...prev, search: search || undefined }));
   };
 
   const handleFilterChange = (key: keyof JobDescriptionFilters, value: string) => {
-    // If changing job band, clear job grade
+    // If changing job band, clear job grades
     if (key === 'jobBand') {
-      setFilters(prev => ({ 
-        ...prev, 
+      setFilters(prev => ({
+        ...prev,
         jobBand: (value || undefined) as JobBand | undefined,
-        jobGrade: undefined // Clear job grade when band changes
+        jobGrades: undefined // Clear job grades when band changes
       }));
     } else {
-      setFilters(prev => ({ 
-        ...prev, 
-        [key]: value || undefined 
+      setFilters(prev => ({
+        ...prev,
+        [key]: value || undefined
       }));
     }
+  };
+
+  const handleJobGradeToggle = (gradeName: string) => {
+    setFilters(prev => {
+      const currentGrades = prev.jobGrades || [];
+      const isSelected = currentGrades.includes(gradeName);
+
+      if (isSelected) {
+        // Remove grade
+        const newGrades = currentGrades.filter(g => g !== gradeName);
+        return { ...prev, jobGrades: newGrades.length > 0 ? newGrades : undefined };
+      } else {
+        // Add grade
+        return { ...prev, jobGrades: [...currentGrades, gradeName] };
+      }
+    });
+  };
+
+  const clearJobGrades = () => {
+    setFilters(prev => ({ ...prev, jobGrades: undefined }));
+    setShowGradeDropdown(false);
   };
 
   const clearFilters = () => {
@@ -311,19 +349,83 @@ export const BrowseJDPage = () => {
                 ))}
               </Select>
 
-              <Select
-                label="Job Grade"
-                value={filters.jobGrade || ''}
-                onChange={(e) => handleFilterChange('jobGrade', e.target.value)}
-                disabled={!filters.jobBand}
-              >
-                <option value="">All Job Grades</option>
-                {getAvailableGrades().map((grade) => (
-                  <option key={grade.id} value={grade.name}>
-                    {grade.name}
-                  </option>
-                ))}
-              </Select>
+              {/* Multi-Select Job Grade */}
+              <div className="relative" ref={gradeDropdownRef}>
+                <label className="block text-sm font-medium text-primary-700 mb-1">
+                  Job Grade
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowGradeDropdown(!showGradeDropdown)}
+                  disabled={!filters.jobBand}
+                  className={`w-full px-3 py-2 text-left bg-white border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all flex items-center justify-between ${!filters.jobBand ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary-300'
+                    }`}
+                >
+                  <span className={`truncate ${filters.jobGrades && filters.jobGrades.length > 0 ? 'text-primary-700' : 'text-primary-400'}`}>
+                    {filters.jobGrades && filters.jobGrades.length > 0
+                      ? `${filters.jobGrades.length} selected`
+                      : 'All Job Grades'}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-primary-400 transition-transform ${showGradeDropdown ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Selected chips */}
+                {filters.jobGrades && filters.jobGrades.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {filters.jobGrades.map((grade) => (
+                      <span
+                        key={grade}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-accent-100 text-accent-700 text-xs rounded-full"
+                      >
+                        {grade.replace('JG ', '')}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleJobGradeToggle(grade);
+                          }}
+                          className="hover:text-accent-900"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={clearJobGrades}
+                      className="text-xs text-primary-500 hover:text-primary-700 ml-1"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+
+                {/* Dropdown */}
+                {showGradeDropdown && filters.jobBand && (
+                  <div className="absolute z-20 w-full mt-1 bg-white border border-primary-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                    {getAvailableGrades().map((grade) => {
+                      const isSelected = filters.jobGrades?.includes(grade.name) || false;
+                      return (
+                        <button
+                          key={grade.id}
+                          type="button"
+                          onClick={() => handleJobGradeToggle(grade.name)}
+                          className={`w-full px-3 py-2 text-left text-sm hover:bg-primary-50 flex items-center justify-between ${isSelected ? 'bg-accent-50 text-accent-700' : 'text-primary-700'
+                            }`}
+                        >
+                          <span>{grade.name}</span>
+                          {isSelected && <Check className="w-4 h-4 text-accent-600" />}
+                        </button>
+                      );
+                    })}
+                    {getAvailableGrades().length === 0 && (
+                      <div className="px-3 py-2 text-sm text-primary-400">
+                        No grades available
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="mt-4 flex justify-end">

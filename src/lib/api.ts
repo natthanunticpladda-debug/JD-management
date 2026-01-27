@@ -54,9 +54,9 @@ export const jobDescriptionsAPI = {
           query = query.eq('job_band', filters.jobBand);
         }
 
-        // Job Grade filter
-        if (filters.jobGrade) {
-          query = query.eq('job_grade', filters.jobGrade);
+        // Job Grades filter (multi-select)
+        if (filters.jobGrades && filters.jobGrades.length > 0) {
+          query = query.in('job_grade', filters.jobGrades);
         }
 
         // Search filter (search in position field)

@@ -314,5 +314,5 @@ export interface JobDescriptionFilters {
   departmentId?: string;
   teamId?: string;
   jobBand?: JobBand;
-  jobGrade?: JobGrade;
+  jobGrades?: string[]; // Changed to array for multi-select
 }
