@@ -89,7 +89,6 @@ export const useUsers = () => {
 
   const createUser = async (userData: {
     email: string;
-    password: string;
     fullName: string;
     role: 'admin' | 'manager' | 'viewer';
     jobGrade: string | null;
@@ -98,28 +97,12 @@ export const useUsers = () => {
     teamId: string;
   }) => {
     try {
-      // Create auth user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: userData.email,
-        password: userData.password,
-        options: {
-          data: {
-            full_name: userData.fullName,
-          },
-        },
-      });
-
-      if (authError) throw authError;
-
-      if (!authData.user) {
-        throw new Error('Failed to create user');
-      }
-
-      // Create user record in users table
+      // Pre-register user in users table
+      // User will be linked to auth when they first login via Microsoft
       const { error: userError } = await supabase
         .from('users')
         .insert({
-          id: authData.user.id,
+          id: crypto.randomUUID(), // Generate UUID, will be updated when user logs in via Microsoft
           email: userData.email,
           full_name: userData.fullName,
           role: userData.role,
@@ -127,11 +110,12 @@ export const useUsers = () => {
           location_id: userData.locationId,
           department_id: userData.departmentId,
           team_id: userData.teamId,
+          is_active: true,
         });
 
       if (userError) throw userError;
 
-      toast.success('User created successfully');
+      toast.success('User created successfully. They can now login with Microsoft.');
       await loadUsers();
     } catch (error: any) {
       console.error('Error creating user:', error);

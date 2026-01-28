@@ -27,7 +27,6 @@ type UserJobGrade = '1.1' | '1.2' | '2.1' | '2.2' | '3.1' | '3.2' | '5';
 
 type UserFormData = {
   email: string;
-  password: string;
   fullName: string;
   role: 'admin' | 'manager' | 'viewer';
   jobGrade: UserJobGrade | '';
@@ -57,7 +56,6 @@ export const UsersPage = () => {
 
   const [formData, setFormData] = useState<UserFormData>({
     email: '',
-    password: '',
     fullName: '',
     role: 'viewer',
     jobGrade: '',
@@ -90,7 +88,6 @@ export const UsersPage = () => {
   const resetForm = () => {
     setFormData({
       email: '',
-      password: '',
       fullName: '',
       role: 'viewer',
       jobGrade: '',
@@ -102,7 +99,7 @@ export const UsersPage = () => {
   };
 
   const handleCreate = async () => {
-    if (!formData.email || !formData.password || !formData.fullName) {
+    if (!formData.email || !formData.fullName) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -116,7 +113,6 @@ export const UsersPage = () => {
     try {
       await createUser({
         email: formData.email,
-        password: formData.password,
         fullName: formData.fullName,
         role: formData.role,
         jobGrade: formData.jobGrade || null,
@@ -141,7 +137,6 @@ export const UsersPage = () => {
 
     setFormData({
       email: user.email,
-      password: '',
       fullName: user.full_name,
       role: user.role,
       jobGrade: user.job_grade || '',
@@ -461,14 +456,6 @@ export const UsersPage = () => {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="john@example.com"
-                  required
-                />
-                <Input
-                  label="Password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="Min. 6 characters"
                   required
                 />
                 <Select
