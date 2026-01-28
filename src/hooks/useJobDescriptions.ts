@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { jobDescriptionsAPI } from '../lib/api';
-import type { 
-  JobDescriptionAPI, 
-  CreateJobDescriptionData, 
+import type {
+  JobDescriptionAPI,
+  CreateJobDescriptionData,
   UpdateJobDescriptionData,
-  JobDescriptionFilters 
+  JobDescriptionFilters
 } from '../types';
 import toast from 'react-hot-toast';
+import { logActivity } from './useActivityLogs';
 
 export const useJobDescriptions = () => {
   const [jobDescriptions, setJobDescriptions] = useState<JobDescriptionAPI[]>([]);
@@ -61,6 +62,17 @@ export const useJobDescriptions = () => {
       const newJD = await jobDescriptionsAPI.create(data);
       setJobDescriptions(prev => [...prev, newJD]);
       toast.success('Job description created successfully!');
+
+      // Log activity
+      await logActivity(
+        data.created_by,
+        'create',
+        'job_description',
+        newJD.id,
+        `สร้าง Job Description: ${newJD.position}`,
+        { position: newJD.position, job_grade: newJD.job_grade, status: newJD.status }
+      );
+
       return newJD;
     } catch (err) {
       const errorMessage = 'Failed to create job description';
@@ -80,14 +92,27 @@ export const useJobDescriptions = () => {
       console.log('=== Updating Job Description ===');
       console.log('ID:', id);
       console.log('Data:', data);
-      
+
       const updatedJD = await jobDescriptionsAPI.update(id, data);
-      
+
       console.log('Update successful:', updatedJD);
-      setJobDescriptions(prev => 
+      setJobDescriptions(prev =>
         prev.map(jd => jd.id === id ? updatedJD : jd)
       );
       toast.success('Job description updated successfully!');
+
+      // Log activity
+      if (data.updated_by) {
+        await logActivity(
+          data.updated_by,
+          'update',
+          'job_description',
+          id,
+          `แก้ไข Job Description: ${updatedJD.position}`,
+          { position: updatedJD.position, changes: Object.keys(data) }
+        );
+      }
+
       return updatedJD;
     } catch (err: any) {
       console.error('=== Update Error ===');
@@ -95,7 +120,7 @@ export const useJobDescriptions = () => {
       console.error('Error message:', err?.message);
       console.error('Error details:', err?.details);
       console.error('Error hint:', err?.hint);
-      
+
       const errorMessage = err?.message || 'Failed to update job description';
       setError(errorMessage);
       toast.error(`Update failed: ${errorMessage}`);
@@ -106,13 +131,25 @@ export const useJobDescriptions = () => {
   };
 
   // Delete job description
-  const deleteJobDescription = async (id: string): Promise<void> => {
+  const deleteJobDescription = async (id: string, userId?: string, position?: string): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
       await jobDescriptionsAPI.delete(id);
       setJobDescriptions(prev => prev.filter(jd => jd.id !== id));
       toast.success('Job description deleted successfully!');
+
+      // Log activity
+      if (userId) {
+        await logActivity(
+          userId,
+          'delete',
+          'job_description',
+          id,
+          `ลบ Job Description: ${position || 'Unknown'}`,
+          { position }
+        );
+      }
     } catch (err) {
       const errorMessage = 'Failed to delete job description';
       setError(errorMessage);
@@ -124,15 +161,27 @@ export const useJobDescriptions = () => {
   };
 
   // Archive job description
-  const archiveJobDescription = async (id: string): Promise<void> => {
+  const archiveJobDescription = async (id: string, userId?: string): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
       const archivedJD = await jobDescriptionsAPI.archive(id);
-      setJobDescriptions(prev => 
+      setJobDescriptions(prev =>
         prev.map(jd => jd.id === id ? archivedJD : jd)
       );
       toast.success('Job description archived successfully!');
+
+      // Log activity
+      if (userId) {
+        await logActivity(
+          userId,
+          'archive',
+          'job_description',
+          id,
+          `Archive Job Description: ${archivedJD.position}`,
+          { position: archivedJD.position }
+        );
+      }
     } catch (err) {
       const errorMessage = 'Failed to archive job description';
       setError(errorMessage);
@@ -144,15 +193,27 @@ export const useJobDescriptions = () => {
   };
 
   // Publish job description
-  const publishJobDescription = async (id: string): Promise<void> => {
+  const publishJobDescription = async (id: string, userId?: string): Promise<void> => {
     setLoading(true);
     setError(null);
     try {
       const publishedJD = await jobDescriptionsAPI.publish(id);
-      setJobDescriptions(prev => 
+      setJobDescriptions(prev =>
         prev.map(jd => jd.id === id ? publishedJD : jd)
       );
       toast.success('Job description published successfully!');
+
+      // Log activity
+      if (userId) {
+        await logActivity(
+          userId,
+          'publish',
+          'job_description',
+          id,
+          `เผยแพร่ Job Description: ${publishedJD.position}`,
+          { position: publishedJD.position, job_grade: publishedJD.job_grade }
+        );
+      }
     } catch (err) {
       const errorMessage = 'Failed to publish job description';
       setError(errorMessage);

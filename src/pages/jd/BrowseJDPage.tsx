@@ -187,7 +187,8 @@ export const BrowseJDPage = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteJobDescription(id);
+      const jdToDelete = jobDescriptions.find(jd => jd.id === id);
+      await deleteJobDescription(id, user?.id, jdToDelete?.position);
       setDeleteConfirm(null);
     } catch (error) {
       // Error is handled in the hook
@@ -196,7 +197,7 @@ export const BrowseJDPage = () => {
 
   const handlePublish = async (id: string) => {
     try {
-      await publishJobDescription(id);
+      await publishJobDescription(id, user?.id);
     } catch (error) {
       // Error is handled in the hook
     }

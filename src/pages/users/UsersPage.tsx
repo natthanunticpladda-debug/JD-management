@@ -119,7 +119,7 @@ export const UsersPage = () => {
         locationId: formData.locationId,
         departmentId: formData.departmentId,
         teamId: formData.teamId,
-      });
+      }, currentUser?.id);
       setShowCreateModal(false);
       resetForm();
     } catch (error: any) {
@@ -171,7 +171,7 @@ export const UsersPage = () => {
         departmentId: formData.departmentId,
         teamId: formData.teamId,
         additionalTeamIds: formData.role === 'manager' ? formData.additionalTeamIds : [],
-      });
+      }, currentUser?.id, selectedUser.full_name);
       setShowEditModal(false);
       setSelectedUser(null);
       resetForm();
@@ -214,7 +214,7 @@ export const UsersPage = () => {
 
     setSubmitting(true);
     try {
-      await deleteUser(deleteConfirm.id);
+      await deleteUser(deleteConfirm.id, currentUser?.id, deleteConfirm.full_name);
       setDeleteConfirm(null);
     } catch (error: any) {
       toast.error(error.message || 'Failed to delete user');
@@ -225,7 +225,7 @@ export const UsersPage = () => {
 
   const handleToggleStatus = async (user: User) => {
     try {
-      await updateUser(user.id, { isActive: !user.is_active });
+      await updateUser(user.id, { isActive: !user.is_active }, currentUser?.id, user.full_name);
     } catch (error: any) {
       toast.error(error.message || 'Failed to update user status');
     }

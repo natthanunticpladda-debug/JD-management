@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import type { User } from '../types';
 import toast from 'react-hot-toast';
+import { logActivity } from './useActivityLogs';
 
 export const useUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -95,14 +96,15 @@ export const useUsers = () => {
     locationId: string;
     departmentId: string;
     teamId: string;
-  }) => {
+  }, adminUserId?: string) => {
     try {
+      const newUserId = crypto.randomUUID();
       // Pre-register user in users table
       // User will be linked to auth when they first login via Microsoft
       const { error: userError } = await supabase
         .from('users')
         .insert({
-          id: crypto.randomUUID(), // Generate UUID, will be updated when user logs in via Microsoft
+          id: newUserId, // Generate UUID, will be updated when user logs in via Microsoft
           email: userData.email,
           full_name: userData.fullName,
           role: userData.role,
@@ -116,6 +118,19 @@ export const useUsers = () => {
       if (userError) throw userError;
 
       toast.success('User created successfully. They can now login with Microsoft.');
+
+      // Log activity
+      if (adminUserId) {
+        await logActivity(
+          adminUserId,
+          'create',
+          'user',
+          newUserId,
+          `สร้างผู้ใช้ใหม่: ${userData.fullName} (${userData.email})`,
+          { email: userData.email, fullName: userData.fullName, role: userData.role }
+        );
+      }
+
       await loadUsers();
     } catch (error: any) {
       console.error('Error creating user:', error);
@@ -134,7 +149,9 @@ export const useUsers = () => {
       teamId?: string;
       isActive?: boolean;
       additionalTeamIds?: string[];
-    }
+    },
+    adminUserId?: string,
+    targetUserName?: string
   ) => {
     try {
       const updateData: any = {};
@@ -184,6 +201,31 @@ export const useUsers = () => {
       }
 
       toast.success('User updated successfully');
+
+      // Log activity
+      if (adminUserId) {
+        // Determine activity action based on updates
+        let action: 'update' | 'role_change' | 'team_assign' = 'update';
+        let description = `แก้ไขข้อมูลผู้ใช้: ${targetUserName || userId}`;
+
+        if (updates.role !== undefined) {
+          action = 'role_change';
+          description = `เปลี่ยน Role ผู้ใช้ ${targetUserName || userId} เป็น ${updates.role}`;
+        } else if (updates.teamId !== undefined || updates.additionalTeamIds !== undefined) {
+          action = 'team_assign';
+          description = `กำหนด Team ให้ผู้ใช้: ${targetUserName || userId}`;
+        }
+
+        await logActivity(
+          adminUserId,
+          action,
+          'user',
+          userId,
+          description,
+          { changes: Object.keys(updates), ...updates }
+        );
+      }
+
       await loadUsers();
     } catch (error: any) {
       console.error('Error updating user:', error);
@@ -191,7 +233,7 @@ export const useUsers = () => {
     }
   };
 
-  const deleteUser = async (userId: string) => {
+  const deleteUser = async (userId: string, adminUserId?: string, targetUserName?: string) => {
     try {
       // Soft delete by setting is_active to false
       const { error } = await supabase
@@ -202,6 +244,19 @@ export const useUsers = () => {
       if (error) throw error;
 
       toast.success('User deactivated successfully');
+
+      // Log activity
+      if (adminUserId) {
+        await logActivity(
+          adminUserId,
+          'user_delete',
+          'user',
+          userId,
+          `ปิดการใช้งานผู้ใช้: ${targetUserName || userId}`,
+          { deactivatedUser: targetUserName || userId }
+        );
+      }
+
       await loadUsers();
     } catch (error: any) {
       console.error('Error deleting user:', error);

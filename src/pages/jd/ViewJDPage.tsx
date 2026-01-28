@@ -467,7 +467,7 @@ export const ViewJDPage = () => {
   const handleDelete = async () => {
     if (!jd) return;
     try {
-      await deleteJobDescription(jd.id);
+      await deleteJobDescription(jd.id, user?.id, jd.position);
       navigate('/job-descriptions');
     } catch (error) {
       // Error is handled in the hook

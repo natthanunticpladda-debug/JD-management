@@ -39,17 +39,35 @@ export const ActivityLogsPage = () => {
   });
 
   const getActionBadge = (action: string) => {
-    const styles = {
+    const styles: Record<string, string> = {
       create: 'bg-green-100 text-green-600',
       update: 'bg-blue-100 text-blue-600',
       delete: 'bg-red-100 text-red-600',
       publish: 'bg-purple-100 text-purple-600',
       archive: 'bg-yellow-100 text-yellow-600',
+      role_change: 'bg-orange-100 text-orange-600',
+      team_assign: 'bg-cyan-100 text-cyan-600',
+      team_remove: 'bg-pink-100 text-pink-600',
+      user_delete: 'bg-red-100 text-red-600',
+      password_change: 'bg-indigo-100 text-indigo-600',
+    };
+
+    const labels: Record<string, string> = {
+      create: 'Create',
+      update: 'Update',
+      delete: 'Delete',
+      publish: 'Publish',
+      archive: 'Archive',
+      role_change: 'Role Change',
+      team_assign: 'Team Assign',
+      team_remove: 'Team Remove',
+      user_delete: 'User Delete',
+      password_change: 'Password Change',
     };
 
     return (
-      <span className={`inline-flex items-center px-2 py-1 rounded-lg text-caption font-medium ${styles[action as keyof typeof styles] || 'bg-gray-100 text-gray-600'}`}>
-        {action.charAt(0).toUpperCase() + action.slice(1)}
+      <span className={`inline-flex items-center px-2 py-1 rounded-lg text-caption font-medium ${styles[action] || 'bg-gray-100 text-gray-600'}`}>
+        {labels[action] || action.charAt(0).toUpperCase() + action.slice(1)}
       </span>
     );
   };
@@ -157,6 +175,10 @@ export const ActivityLogsPage = () => {
             <option value="delete">Delete</option>
             <option value="publish">Publish</option>
             <option value="archive">Archive</option>
+            <option value="role_change">Role Change</option>
+            <option value="team_assign">Team Assign</option>
+            <option value="team_remove">Team Remove</option>
+            <option value="user_delete">User Delete</option>
           </Select>
 
           <Select value={entityFilter} onChange={(e) => setEntityFilter(e.target.value)}>
